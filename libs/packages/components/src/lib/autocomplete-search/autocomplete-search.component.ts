@@ -599,6 +599,22 @@ export class SDSAutocompleteSearchComponent implements ControlValueAccessor {
   }
 
   /**
+   * Sets the highlighted item on mouseover
+   * @param item
+   */
+  public onItemHover(item: object): void {
+    if (!this.results || this.results.length === 0) {
+      return;
+    }
+    const flat = this.getFlatElements();
+    const index = flat.indexOf(item);
+    if (index >= 0) {
+      this.highlightedIndex = index;
+      this.setHighlightedItem(item);
+    }
+  }
+
+  /**
    * Sets the highlighted item by keyboard or mouseover
    * @param item
    */

@@ -56,6 +56,7 @@
               role="listitem"
               *ngFor="let result of results; let i = index"
               (click)="selectItem(result)"
+              (mouseover)="onItemHover(result)"
               [ngClass]="{
                 'sds-autocomplete__checkbox--highlighted': result['highlighted']
               }"
@@ -92,6 +93,7 @@
             }"
             *ngFor="let result of results; let i = index"
             (click)="!configuration.isSelectableGroup ? '' : selectItem(result)"
+            (mouseover)="onItemHover(result)"
           >
             <ng-container
               *ngIf="itemTemplate"
@@ -140,6 +142,7 @@
                   }"
                   *ngFor="let child of result[configuration.groupByChild]; let j = index"
                   (click)="selectItem(child)"
+                  (mouseover)="onItemHover(child)"
                 >
                   <div
                     [ngClass]="{
@@ -180,6 +183,7 @@
                       }"
                       *ngFor="let subchild of child[configuration.groupByChild]; let k = index"
                       (click)="selectItem(subchild)"
+                      (mouseover)="onItemHover(subchild)"
                     >
                       <div>
                         <div
