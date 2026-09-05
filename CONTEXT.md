@@ -32,7 +32,7 @@
 - a11y/508: many open (#1591, #1589, #1446, #1056, #1054, #1053) — mostly unassigned, but 508 fixes need JAWS/AMP verification we cannot run. Lower priority.
 
 ## Gap ledger (dedupe — READ FIRST, never re-pick)
-- (no prior runs in this repo yet — first contribution cycle)
+- 2026-09-05 autocomplete-search Enter-key bug (issue #1448): PICKED. Fork PR opened https://github.com/olitreadwell/sam-design-system/pull/1 (head 1448-autocomplete-enter-key-selects-hovered-item). Fix: added onItemHover() + (mouseover) handlers on all result <li> variants. Verified: 389 component tests pass.
 
 ## Mined gaps (discovered, not yet attempted)
-- 2026-09-05 autocomplete-search: no `(mouseover)` handler on result list items, so hovering an option does not update `highlightedItem`/`highlightedIndex`; pressing Enter after hovering a non-first option selects the FIRST option instead of the hovered one (issue #1448, cwolf10 confirmed repro). Repro: open autocomplete, mouse over option index 2, press Enter -> results[0] selected. Dedupe: no open/merged PR covers this (PR #1572/#1550 are stepper, unrelated). Proposed test: open autocomplete, call onItemHover(results[2]), press Enter, assert results[2] selected. Status: proposed.
+- 2026-09-05 autocomplete-search: no `(mouseover)` handler on result list items, so hovering an option does not update `highlightedItem`/`highlightedIndex`; pressing Enter after hovering a non-first option selects the FIRST option instead of the hovered one (issue #1448, cwolf10 confirmed repro). Repro: open autocomplete, mouse over option index 2, press Enter -> results[0] selected. Dedupe: no open/merged PR covers this (PR #1572/#1550 are stepper, unrelated). Proposed test: open autocomplete, call onItemHover(results[2]), press Enter, assert results[2] selected. Status: picked -> PR #1 (fork).
