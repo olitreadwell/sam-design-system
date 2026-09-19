@@ -579,4 +579,31 @@ describe('SamAutocompleteComponent', () => {
     const input = fixture.debugElement.query(By.css('.usa-input'));
     expect(input.nativeElement.value).toBe('a');
   }));
+
+  it('should select the hovered item when pressing Enter after mouseover', fakeAsync(() => {
+    component.inputFocusHandler();
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+    const list = fixture.debugElement.query(By.css('.sds-autocomplete'));
+    expect(list.nativeElement.children.length).toBe(16);
+    expect(component.results[0]['highlighted']).toBeTruthy();
+
+    component.onItemHover(component.results[2]);
+    fixture.detectChanges();
+    expect(component.results[2]['highlighted']).toBeTruthy();
+
+    const event = {
+      key: 'Enter',
+      target: { value: 'id' },
+      preventDefault: () => {},
+    };
+    component.onKeydown(event);
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+
+    expect(component.model.items.length).toBe(1);
+    expect(component.model.items[0]).toBe(component.results[2]);
+  }));
 });
