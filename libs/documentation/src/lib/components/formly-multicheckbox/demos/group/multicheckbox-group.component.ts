@@ -4,8 +4,8 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 
 @Component({
   templateUrl: './multicheckbox-group.component.html',
-
   selector: `sds-formly-multicheckbox-group-demo`,
+  standalone: false,
 })
 export class MultiCheckboxGroup {
   form = new UntypedFormGroup({});

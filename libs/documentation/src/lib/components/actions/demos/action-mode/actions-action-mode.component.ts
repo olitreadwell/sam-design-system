@@ -6,6 +6,7 @@ import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 @Component({
   templateUrl: 'actions-action-mode.component.html',
   selector: `sds-actions-action-mode-demo`,
+  standalone: false,
 })
 export class ActionsMenuActionMode {
   constructor() {}

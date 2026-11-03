@@ -7,6 +7,7 @@ import { AutocompleteSampleDataService } from '../services/autocomplete-sample.s
   templateUrl: './autocomplete-inputreadonly.component.html',
   selector: `sds-autocomplete-inputreadonly-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class AutocompleteInputReadOnly implements OnInit {
   public inputReadOnlySettings = new SDSAutocompletelConfiguration();

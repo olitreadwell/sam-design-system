@@ -20,6 +20,7 @@ import { DocumentationDemoList } from '../demo-list';
       <ng-template [ngComponentOutlet]="demo.type"></ng-template>
     </documentation-widget-demo>
   `,
+  standalone: false,
 })
 export class DocumentationExamplesPage {
   component: string;

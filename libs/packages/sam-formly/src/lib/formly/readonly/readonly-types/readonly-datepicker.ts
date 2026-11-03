@@ -14,6 +14,7 @@ import { Component, Input, TemplateRef } from '@angular/core';
       <span class="text-bold"> {{ value ? (value | date: 'mediumDate') : '&mdash;' }}</span>
     </ng-template>
   `,
+  standalone: false,
 })
 export class ReadonlyDatepickerComponent {
   @Input() value: Date;

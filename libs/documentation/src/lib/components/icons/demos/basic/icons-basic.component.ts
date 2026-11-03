@@ -8,6 +8,7 @@ import * as _ from 'lodash';
   styleUrls: ['./icons-basic.component.scss'],
   selector: `sds-icons-basic-demo`,
   preserveWhitespaces: true,
+  standalone: false,
 })
 export class IconsBasic {
   appendPrefix(iconsObject: { [key: string]: string }, prefix: string): Object {

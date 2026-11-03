@@ -17,6 +17,7 @@ export type PaginationDisplayMode = 'default' | 'results';
   selector: 'sds-pagination',
   templateUrl: './pagination.component.html',
   styleUrls: ['./pagination.component.scss'],
+  standalone: false,
 })
 export class PaginationComponent implements OnInit {
   ngOnInit(): void {

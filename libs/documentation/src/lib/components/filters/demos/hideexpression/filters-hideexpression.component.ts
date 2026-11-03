@@ -5,6 +5,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   templateUrl: './filters-hideexpression.component.html',
   selector: `sds-filters-hideexpression-demo`,
+  standalone: false,
 })
 export class FiltersHideExpression {
   form = new UntypedFormGroup({});

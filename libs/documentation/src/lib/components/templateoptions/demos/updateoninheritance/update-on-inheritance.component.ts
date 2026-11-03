@@ -4,6 +4,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   templateUrl: './update-on-inheritance.component.html',
   selector: `sds-update-on-inheritance-demo`,
+  standalone: false,
 })
 export class UpdateOnInheritanceComponent {
   form = new UntypedFormGroup({});

@@ -18,6 +18,7 @@ import { SdsDialogService } from '../dialog/dialog';
 @Component({
   selector: 'sds-side-toolbar',
   templateUrl: './side-toolbar.component.html',
+  standalone: false,
 })
 export class SdsSideToolbarComponent implements OnInit, OnDestroy {
   @ContentChild(TemplateRef) template: TemplateRef<any>;
@@ -56,7 +57,7 @@ export class SdsSideToolbarComponent implements OnInit, OnDestroy {
 
   constructor(
     private sdsDialogService: SdsDialogService,
-    private breakpointObserver: BreakpointObserver // Will watch for changes between mobile and non-mobile screen size
+    private breakpointObserver: BreakpointObserver, // Will watch for changes between mobile and non-mobile screen size
   ) {}
 
   ngOnInit() {

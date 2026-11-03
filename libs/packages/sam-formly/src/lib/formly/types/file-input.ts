@@ -15,6 +15,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   selector: `sds-formly-field-file-input`,
   templateUrl: './file-input.html',
+  standalone: false,
 })
 export class FormlyFieldFileInputComponent extends AbstractSdsFormly implements OnInit {
   @ViewChild(UsaFileInputComponent, { static: true }) public template: UsaFileInputComponent;

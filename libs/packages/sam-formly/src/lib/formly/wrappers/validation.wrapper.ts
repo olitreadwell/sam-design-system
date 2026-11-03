@@ -17,6 +17,7 @@ import { FieldWrapper } from '@ngx-formly/core';
       <formly-validation-message [field]="field"></formly-validation-message>
     </div>
   `,
+  standalone: false,
 })
 export class FormlyValidationWrapperComponent extends FieldWrapper {
   @ViewChild('fieldComponent', { read: ViewContainerRef })

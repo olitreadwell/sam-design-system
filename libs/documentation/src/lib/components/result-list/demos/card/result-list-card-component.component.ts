@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef } from '
 @Component({
   templateUrl: './result-list-card-component.component.html',
   selector: `sds-result-list-card-demo`,
+  standalone: false,
 })
 export class ResultListCardComponent {
   constructor(private change: ChangeDetectorRef) {}

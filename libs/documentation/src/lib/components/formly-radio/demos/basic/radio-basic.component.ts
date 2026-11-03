@@ -6,6 +6,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
   templateUrl: './radio-basic.component.html',
   styleUrls: ['./radio-basic.component.scss'],
   selector: `sds-formly-radio-basic-demo`,
+  standalone: false,
 })
 export class RadioBasic {
   form = new UntypedFormGroup({});

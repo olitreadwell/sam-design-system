@@ -7,6 +7,7 @@ import { AutocompleteSampleDataService } from '../services/autocomplete-sample.s
   templateUrl: './autocomplete-tagmode.component.html',
   selector: `sds-autocomplete-tagmode-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class AutocompleteTagmode implements OnInit {
   private data = SampleAutocompleteData;

@@ -4,5 +4,6 @@ import { Component } from '@angular/core';
   selector: `sds-tabs-template-header-demo`,
   templateUrl: './tabs-template-header.component.html',
   styleUrls: ['./tabs-template-header.component.scss'],
+  standalone: false,
 })
 export class TabsTemplateHeaderComponent {}

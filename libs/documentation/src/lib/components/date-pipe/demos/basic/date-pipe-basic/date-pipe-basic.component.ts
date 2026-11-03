@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'gsa-sam-date-pipe-basic',
   templateUrl: './date-pipe-basic.component.html',
+  standalone: false,
 })
 export class DatePipeBasicComponent {
   today = Date.now();

@@ -21,6 +21,7 @@ import { Component, Input, OnInit, TemplateRef } from '@angular/core';
       </span>
     </ng-template>
   `,
+  standalone: false,
 })
 export class ReadonlyRadioComponent implements OnInit {
   @Input() value: any;

@@ -14,11 +14,12 @@ export interface AlertData {
 @Component({
   selector: 'sds-dialog-sample-data',
   templateUrl: './overview-template.html',
+  standalone: false,
 })
 export class DialogOverviewExampleDialog {
   constructor(
     public dialogRef: SdsDialogRef<DialogOverviewExampleDialog>,
-    @Inject(SDS_DIALOG_DATA) public data: DialogData
+    @Inject(SDS_DIALOG_DATA) public data: DialogData,
   ) {}
 
   onNoClick(): void {
@@ -33,6 +34,7 @@ export class DialogOverviewExampleDialog {
 @Component({
   selector: 'sds-modal-sample',
   templateUrl: './dialog-overview.component.html',
+  standalone: false,
 })
 export class DialogOverView {
   animal: string;

@@ -13,6 +13,7 @@ interface tabsDesc {
 @Component({
   selector: 'docs-component-wrapper',
   templateUrl: 'component-wrapper.component.html',
+  standalone: false,
 })
 export class ComponentWrapperComponent {
   activeTab = 'examples';
@@ -29,7 +30,11 @@ export class ComponentWrapperComponent {
   opening: string;
   closing: string;
 
-  constructor(public route: ActivatedRoute, private _router: Router, ngZone: NgZone) {
+  constructor(
+    public route: ActivatedRoute,
+    private _router: Router,
+    ngZone: NgZone,
+  ) {
     this._router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
       const parentRoute = this.route.snapshot.parent;
       const tabRoute = this.route.snapshot.firstChild;

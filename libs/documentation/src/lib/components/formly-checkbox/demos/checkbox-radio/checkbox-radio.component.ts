@@ -6,6 +6,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
   selector: 'gsa-sam-checkbox-radio',
   templateUrl: './checkbox-radio.component.html',
   styleUrls: ['./checkbox-radio.component.scss'],
+  standalone: false,
 })
 export class CheckboxRadio {
   form = new UntypedFormGroup({});

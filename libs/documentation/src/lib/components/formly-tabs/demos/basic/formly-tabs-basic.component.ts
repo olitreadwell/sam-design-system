@@ -6,6 +6,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   selector: 'gsa-sam-formly-tabs-basic',
   templateUrl: './formly-tabs-basic.component.html',
+  standalone: false,
 })
 export class FormlyTabsBasicComponent {
   model = {};

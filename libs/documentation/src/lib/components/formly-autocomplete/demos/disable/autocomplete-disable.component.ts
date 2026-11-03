@@ -10,6 +10,7 @@ import { SampleAutocompleteData } from './autocomplete-sample.data';
   templateUrl: './autocomplete-disable.component.html',
   selector: `sds-formly-autocomplete-disable-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class FormlyAutocompleteDisable {
   results: any;

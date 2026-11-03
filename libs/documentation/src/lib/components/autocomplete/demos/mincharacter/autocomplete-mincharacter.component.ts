@@ -7,6 +7,7 @@ import { AutocompleteSampleDataService } from '../services/autocomplete-sample.s
   templateUrl: './autocomplete-mincharacter.component.html',
   selector: `sds-autocomplete-mincharacter-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class AutocompleteMinCharacter implements OnInit {
   private data = SampleAutocompleteData;

@@ -10,8 +10,9 @@ import {
   ViewChild,
   ViewEncapsulation,
   ChangeDetectionStrategy,
+  DOCUMENT,
 } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+
 import { AnimationEvent } from '@angular/animations';
 import { sdsDialogAnimations } from './dialog-animations';
 import { BasePortalOutlet, ComponentPortal, CdkPortalOutlet, TemplatePortal } from '@angular/cdk/portal';
@@ -60,6 +61,7 @@ export function throwSdsDialogContentAlreadyAttachedError() {
     '(@dialogContainer.start)': '_onAnimationStart($event)',
     '(@dialogContainer.done)': '_onAnimationDone($event)',
   },
+  standalone: false,
 })
 export class SdsDialogContainerComponent extends BasePortalOutlet {
   /** The portal outlet inside of this container into which the dialog content will be loaded. */
@@ -89,7 +91,7 @@ export class SdsDialogContainerComponent extends BasePortalOutlet {
     private _changeDetectorRef: ChangeDetectorRef,
     @Optional() @Inject(DOCUMENT) private _document: any,
     /** The dialog configuration. */
-    public _config: SdsDialogConfig
+    public _config: SdsDialogConfig,
   ) {
     super();
   }

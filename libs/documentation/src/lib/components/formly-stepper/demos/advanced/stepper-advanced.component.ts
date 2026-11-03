@@ -7,6 +7,7 @@ import { FormlyForm } from '@ngx-formly/core';
   selector: `stepper-advanced-demo`,
   templateUrl: `./stepper-advanced.component.html`,
   providers: [StepperAdvancedService, SdsStepper],
+  standalone: false,
 })
 export class StepperAdvancedDemoComponent {
   model = { subawardee: [], reportDetails: { report: { month: '03', year: '03' } } };

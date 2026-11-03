@@ -6,6 +6,7 @@ import { AutocompleteSampleDataService } from '../services/autocomplete-sample.s
   selector: `sds-autocomplete-aria-label-demo`,
   templateUrl: './autocomplete-aria-label.component.html',
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class AutocompleteAriaLabelComponent {
   public settings = new SDSAutocompletelConfiguration();

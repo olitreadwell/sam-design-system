@@ -41,6 +41,7 @@ import { FieldWrapper } from '@ngx-formly/core';
       </div>
     </div>
   `,
+  standalone: false,
 })
 export class FormlyWrapperFormFieldComponent extends FieldWrapper {
   @ViewChild('fieldComponent', { read: ViewContainerRef })

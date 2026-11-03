@@ -68,7 +68,7 @@ describe('Formly Field Radio Component', () => {
       ];
 
       const fixture = createTestComponent(
-          '<formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>'
+          '<formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>',
         ),
         trigger = fixture.debugElement.queryAll(By.css('.usa-radio'));
 
@@ -80,7 +80,11 @@ describe('Formly Field Radio Component', () => {
   });
 });
 
-@Component({ selector: 'formly-form-test', template: '' })
+@Component({
+  selector: 'formly-form-test',
+  template: '',
+  standalone: false,
+})
 class TestComponent {
   @ViewChild(FormlyForm, { static: false }) formlyForm: FormlyForm;
 

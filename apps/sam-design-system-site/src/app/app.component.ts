@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
   selector: 'sam-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  standalone: false,
 })
 export class AppComponent {
   styleSheetLink: Element;

@@ -4,6 +4,7 @@ import { Directive, HostBinding, Input } from '@angular/core';
   selector: '[sdsCollapse]',
   exportAs: 'sdsCollapse',
   host: { '[class.display-none]': 'collapsed' },
+  standalone: false,
 })
 export class CollapseDirective {
   @Input('sdsCollapse') collapsed: boolean = true;

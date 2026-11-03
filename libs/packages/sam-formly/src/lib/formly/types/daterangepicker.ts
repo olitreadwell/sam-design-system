@@ -21,9 +21,8 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
           [formlyAttributes]="field.fieldGroup[0]"
           [placeholder]="field.fieldGroup[0]?.props?.placeholder || 'mmm-dd-yyyy'"
           [formControlName]="field.fieldGroup[0].key"
-          (ngModelChange)="
-            field.fieldGroup[0]?.props?.change ? field.fieldGroup[0].props.change(field.fieldGroup[0]) : ''
-          "
+          (dateChange)="field.fieldGroup[0]?.props?.change ? field.fieldGroup[0].props.change(field.fieldGroup[0]) : ''"
+          (dateInput)="field.fieldGroup[0]?.props?.change ? field.fieldGroup[0].props.change(field.fieldGroup[0]) : ''"
         />
         <input
           matEndDate
@@ -31,9 +30,8 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
           [formlyAttributes]="field.fieldGroup[1]"
           [placeholder]="field.fieldGroup[1]?.props?.placeholder || 'mmm-dd-yyyy'"
           [formControlName]="field.fieldGroup[1].key"
-          (ngModelChange)="
-            field.fieldGroup[1]?.props?.change ? field.fieldGroup[1].props.change(field.fieldGroup[1]) : ''
-          "
+          (dateChange)="field.fieldGroup[1]?.props?.change ? field.fieldGroup[1].props.change(field.fieldGroup[1]) : ''"
+          (dateInput)="field.fieldGroup[1]?.props?.change ? field.fieldGroup[1].props.change(field.fieldGroup[1]) : ''"
         />
       </mat-date-range-input>
       <mat-datepicker-toggle class="padding-top-2 padding-left-1" matSuffix [for]="picker">
@@ -48,5 +46,6 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
     'table.mat-calendar-table td, table.mat-calendar-table th {border-style: none; background-color: unset; }',
   ],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormlyFieldDateRangePickerComponent extends FieldType<FieldTypeConfig> {}

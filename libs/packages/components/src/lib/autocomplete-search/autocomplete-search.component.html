@@ -58,7 +58,7 @@
               (click)="selectItem(result)"
               (mouseover)="onItemHover(result)"
               [ngClass]="{
-                'sds-autocomplete__checkbox--highlighted': result['highlighted']
+                'sds-autocomplete__checkbox--highlighted': result['highlighted'],
               }"
             >
               <div class="usa-checkbox sds-autocomplete__checkbox">
@@ -89,7 +89,7 @@
               'sds-autocomplete__group': configuration.isGroupingEnabled,
               'sds-autocomplete__item': !configuration.isGroupingEnabled,
               'sds-autocomplete__item--highlighted': result['highlighted'] && !configuration.isGroupingEnabled,
-              'sds-autocomplete__item--selected': checkItemSelected(result) && !configuration.isGroupingEnabled
+              'sds-autocomplete__item--selected': checkItemSelected(result) && !configuration.isGroupingEnabled,
             }"
             *ngFor="let result of results; let i = index"
             (click)="!configuration.isSelectableGroup ? '' : selectItem(result)"
@@ -108,12 +108,12 @@
                   'sds-autocomplete__item--highlighted': configuration.isGroupingEnabled && result['highlighted'],
                   'sds-autocomplete__item--disabled':
                     !configuration.isSelectableGroup && configuration.isGroupingEnabled,
-                  'sds-autocomplete__item--selected': checkItemSelected(result) && configuration.isGroupingEnabled
+                  'sds-autocomplete__item--selected': checkItemSelected(result) && configuration.isGroupingEnabled,
                 }"
               >
                 <div
                   [ngClass]="{
-                    'text-semibold': configuration.secondaryTextField
+                    'text-semibold': configuration.secondaryTextField,
                   }"
                 >
                   {{ getObjectValue(result, configuration.primaryTextField) }}
@@ -138,7 +138,7 @@
                     'sds-autocomplete__item--highlighted':
                       child['highlighted'] && !child[configuration.groupByChild]?.length,
                     'sds-autocomplete__item--selected':
-                      checkItemSelected(child) && !child[configuration.groupByChild]?.length
+                      checkItemSelected(child) && !child[configuration.groupByChild]?.length,
                   }"
                   *ngFor="let child of result[configuration.groupByChild]; let j = index"
                   (click)="selectItem(child)"
@@ -152,12 +152,12 @@
                       'sds-autocomplete__item--disabled':
                         !configuration.isSelectableGroup && child[configuration.groupByChild]?.length,
                       'sds-autocomplete__item--selected':
-                        checkItemSelected(child) && child[configuration.groupByChild]?.length
+                        checkItemSelected(child) && child[configuration.groupByChild]?.length,
                     }"
                   >
                     <div
                       [ngClass]="{
-                        'text-semibold': configuration.secondaryTextField
+                        'text-semibold': configuration.secondaryTextField,
                       }"
                     >
                       {{ getObjectValue(child, configuration.primaryTextField) }}
@@ -179,7 +179,7 @@
                       class="sds-autocomplete__item"
                       [ngClass]="{
                         'sds-autocomplete__item--selected': checkItemSelected(subchild),
-                        'sds-autocomplete__item--highlighted': subchild['highlighted']
+                        'sds-autocomplete__item--highlighted': subchild['highlighted'],
                       }"
                       *ngFor="let subchild of child[configuration.groupByChild]; let k = index"
                       (click)="selectItem(subchild)"
@@ -188,7 +188,7 @@
                       <div>
                         <div
                           [ngClass]="{
-                            'text-semibold': configuration.secondaryTextField
+                            'text-semibold': configuration.secondaryTextField,
                           }"
                         >
                           {{ getObjectValue(subchild, configuration.primaryTextField) }}

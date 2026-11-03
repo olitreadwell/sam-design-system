@@ -6,6 +6,7 @@ import { ToastrService, GlobalConfig } from 'ngx-toastr';
   styleUrls: ['./toasts-basic.component.scss'],
   selector: `sds-toasts-basic-demo`,
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class ToastsBasic {
   options: GlobalConfig;

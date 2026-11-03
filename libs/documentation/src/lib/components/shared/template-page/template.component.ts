@@ -46,6 +46,7 @@ export function getSource(pkg, type, name) {
       </ng-container>
     </ng-container>
   `,
+  standalone: false,
 })
 export class DocumentationTemplatePage {
   items: any = [];

@@ -47,6 +47,7 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
       }
     `,
   ],
+  standalone: false,
 })
 export class FormlyFieldFileInfoComponent extends FieldType<FieldTypeConfig> {
   isSelected: boolean = false;

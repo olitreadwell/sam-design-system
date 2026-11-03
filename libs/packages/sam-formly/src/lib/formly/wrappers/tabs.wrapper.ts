@@ -27,7 +27,7 @@ import { Subscription } from 'rxjs';
       </ng-template>
     </div>
   `,
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class FormlyTabsWrapperComponent extends FieldWrapper implements OnInit, OnDestroy {
   _initialModel: any;

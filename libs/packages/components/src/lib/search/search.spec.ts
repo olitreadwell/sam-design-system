@@ -1,3 +1,17 @@
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'usa-icon',
+  template: '',
+  standalone: false,
+})
+class UsaIconStubComponent {
+  @Input() icon = '';
+  @Input() size = 'lg';
+  @Input() rotate = 0;
+  @Input() classes?: string[];
+  @Input() skew?: any;
+}
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SdsSearchComponent } from './search.component';
 import { By } from '@angular/platform-browser';
@@ -15,19 +29,33 @@ describe('SearchComponent', () => {
   let component: SdsSearchComponent;
   let fixture: ComponentFixture<SdsSearchComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [SdsSearchComponent],
-        providers: [FocusMonitor, ViewportRuler],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [SdsSearchComponent, UsaIconStubComponent],
+
+      providers: [FocusMonitor, ViewportRuler],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SdsSearchComponent);
     component = fixture.componentInstance;
     component.searchSettings.size = 'large';
+    // jsdom always reports 0 for layout geometry (no real rendering engine).
+    // A real browser measures a rendered, visible input/button with nonzero
+    // width; stub `getBoundingClientRect` so `isInputVisible()` /
+    // `calculateInputWidth()` behave the way they do under Karma/Chrome.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 100,
+      height: 20,
+      top: 0,
+      left: 0,
+      bottom: 20,
+      right: 100,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    } as DOMRect);
     fixture.detectChanges();
   });
 
@@ -70,7 +98,7 @@ describe('SearchComponent', () => {
   it('Should emit on submit output on click event', () => {
     const model = { searchText: 'abc' };
     component.model = model;
-    spyOn(component.submit, 'emit');
+    vi.spyOn(component.submit, 'emit');
     component.handleClick({ preventDefault: () => {} });
     expect(component.submit.emit).toHaveBeenCalledWith(model);
   });

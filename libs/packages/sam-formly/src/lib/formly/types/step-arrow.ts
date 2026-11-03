@@ -11,6 +11,7 @@ import { SdsStepArrowComponent } from '@gsa-sam/components';
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class FormlyFieldStepArrowComponent extends AbstractSdsFormly {
   @ViewChild(SdsStepArrowComponent, { static: true }) public template: SdsStepArrowComponent;

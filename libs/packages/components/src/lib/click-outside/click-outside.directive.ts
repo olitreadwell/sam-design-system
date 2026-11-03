@@ -6,6 +6,7 @@ import { Directive, ElementRef, Output, EventEmitter, HostListener } from '@angu
  */
 @Directive({
   selector: '[sds-click-outside]',
+  standalone: false,
 })
 export class SDSClickOutsideDirective {
   /**

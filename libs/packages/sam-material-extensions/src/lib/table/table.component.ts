@@ -14,11 +14,12 @@ import {
   ChangeDetectorRef,
   Output,
   EventEmitter,
+  OnDestroy,
 } from '@angular/core';
 import { AfterViewInit } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatSort } from '@angular/material/sort';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
@@ -46,6 +47,7 @@ export enum SdsTableHeaderColor {
 @Component({
   selector: 'sds-row',
   template: ` <ng-content></ng-content> `,
+  standalone: false,
 })
 export class SdsTableRowComponent {
   @Input() displayedColumns: Array<string>;
@@ -57,6 +59,7 @@ export class SdsTableRowComponent {
 @Component({
   selector: 'sds-header-row',
   template: ` <ng-content></ng-content> `,
+  standalone: false,
 })
 export class SdsTableHeaderRowComponent {
   @Input() displayedColumns: Array<string>;
@@ -66,19 +69,29 @@ export class SdsTableHeaderRowComponent {
 @Component({
   selector: 'sds-footer-row',
   template: ` <ng-content></ng-content> `,
+  standalone: false,
 })
 export class SdsTableFooterRowComponent {
   @Input() displayedColumns: Array<string>;
   @Input() sticky: boolean;
 }
 
-@Directive({ selector: 'sds-table-headercell' })
+@Directive({
+  selector: 'sds-table-headercell',
+  standalone: false,
+})
 export class SdsTableHeaderCellDirective {}
 
-@Directive({ selector: 'sds-table-cell' })
+@Directive({
+  selector: 'sds-table-cell',
+  standalone: false,
+})
 export class SdsTableCellDirective {}
 
-@Directive({ selector: 'sds-table-footercell' })
+@Directive({
+  selector: 'sds-table-footercell',
+  standalone: false,
+})
 export class SdsTableFooterCellDirective {}
 
 @Component({
@@ -96,6 +109,7 @@ export class SdsTableFooterCellDirective {}
       <ng-container *ngTemplateOutlet="footerCellTemplate; context: { element: element }"></ng-container>
     </ng-template>
   `,
+  standalone: false,
 })
 export class SdsTableColumnDefComponent implements AfterContentInit {
   @ViewChild('columnHeaderCell', { static: true }) columnHeaderCell: TemplateRef<any>;
@@ -132,8 +146,9 @@ export class SdsTableColumnDefComponent implements AfterContentInit {
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
+  standalone: false,
 })
-export class SdsTableComponent implements OnInit, AfterContentInit, AfterViewInit, OnChanges {
+export class SdsTableComponent implements OnInit, AfterContentInit, AfterViewInit, OnChanges, OnDestroy {
   /**
    * Data for table
    */
@@ -231,6 +246,10 @@ export class SdsTableComponent implements OnInit, AfterContentInit, AfterViewIni
   showPagination = false;
   totalItems: number;
 
+  private paginatorTimeout?: any;
+  private isDestroyed = false;
+  private subscriptions = new Subscription();
+
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -287,22 +306,29 @@ export class SdsTableComponent implements OnInit, AfterContentInit, AfterViewIni
     }
     if (this.pagination) {
       this.dataSource.paginator = this.matPaginator;
-      this.dataSource.paginator.initialized.subscribe((value) => {
-        setTimeout(() => {
-          this.page = {
-            pageNumber: this.dataSource.paginator.pageIndex + 1,
-            pageSize: this.dataSource.paginator.pageSize,
-            totalPages: this.dataSource.paginator.getNumberOfPages(),
-          };
-          this.totalItems = this.dataSource.data.length;
-          this.showPagination = true;
-          this.changeDetectorRef.detectChanges();
-        });
-      });
+      this.subscriptions.add(
+        this.dataSource.paginator.initialized.subscribe(() => {
+          this.paginatorTimeout = setTimeout(() => {
+            if (this.isDestroyed || !this.dataSource?.paginator) {
+              return;
+            }
+            this.page = {
+              pageNumber: this.dataSource.paginator.pageIndex + 1,
+              pageSize: this.dataSource.paginator.pageSize,
+              totalPages: this.dataSource.paginator.getNumberOfPages(),
+            };
+            this.totalItems = this.dataSource.data.length;
+            this.showPagination = true;
+            this.changeDetectorRef.detectChanges();
+          });
+        }),
+      );
 
-      this.pageChange.subscribe((value) => {
-        this.updateSdsPagination();
-      });
+      this.subscriptions.add(
+        this.pageChange.subscribe(() => {
+          this.updateSdsPagination();
+        }),
+      );
       this.changeDetectorRef.detectChanges();
     }
   }
@@ -316,6 +342,9 @@ export class SdsTableComponent implements OnInit, AfterContentInit, AfterViewIni
   }
 
   updateSdsPagination() {
+    if (this.isDestroyed) {
+      return;
+    }
     if (this.page && this.dataSource?.paginator) {
       this.dataSource.paginator.pageIndex = this.page.pageNumber - 1;
       this.dataSource.paginator._changePageSize(this.page.pageSize);
@@ -340,5 +369,14 @@ export class SdsTableComponent implements OnInit, AfterContentInit, AfterViewIni
 
   get columnsClickable(): boolean {
     return this.sdsColumnItems.filter((item) => item.isClickable).length > 0;
+  }
+
+  ngOnDestroy() {
+    this.isDestroyed = true;
+    if (this.paginatorTimeout) {
+      clearTimeout(this.paginatorTimeout);
+      this.paginatorTimeout = undefined;
+    }
+    this.subscriptions.unsubscribe();
   }
 }

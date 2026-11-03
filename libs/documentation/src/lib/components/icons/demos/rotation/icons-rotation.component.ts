@@ -4,5 +4,6 @@ import { Component } from '@angular/core';
   templateUrl: './icons-rotation.component.html',
   styleUrls: ['./icons-rotation.component.scss'],
   selector: `usa-icon-rotation-demo`,
+  standalone: false,
 })
 export class IconsRotation {}

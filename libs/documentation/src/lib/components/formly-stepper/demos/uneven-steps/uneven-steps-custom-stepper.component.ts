@@ -5,6 +5,7 @@ import { SdsStepComponent, SdsStepper } from '@gsa-sam/sam-formly';
   selector: `uneven-steps-custom-stepper-demo`,
   templateUrl: './uneven-steps-custom-stepper.component.html',
   providers: [{ provide: SdsStepper, useExisting: UnevenStepsCustomStepperComponent }],
+  standalone: false,
 })
 export class UnevenStepsCustomStepperComponent extends SdsStepper implements AfterContentInit {
   stepLabels = [];

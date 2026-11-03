@@ -8,6 +8,7 @@ import { SDSAutocompletelConfiguration, SDSSelectedItemModel, SelectionMode } fr
   templateUrl: './autocomplete-readonly.component.html',
   selector: `sds-formly-readonly-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class FormlyAutocompleteReadOnly {
   results: any;

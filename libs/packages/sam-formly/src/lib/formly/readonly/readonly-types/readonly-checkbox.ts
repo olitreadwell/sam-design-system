@@ -13,6 +13,7 @@ import { Component, Input, TemplateRef } from '@angular/core';
       <span class="text-bold">{{ value ? 'Checked' : 'Unchecked' }}</span>
     </ng-template>
   `,
+  standalone: false,
 })
 export class ReadonlyCheckboxComponent {
   @Input() value: any;

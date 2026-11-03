@@ -60,7 +60,7 @@ describe('Formly Field input Component', () => {
         },
       ];
       const fixture = createTestComponent(
-          '<formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>'
+          '<formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>',
         ),
         trigger = fixture.nativeElement.querySelector('usa-input');
       const expectedValue = fixture.debugElement.query(By.css('.usa-input')).componentInstance.field.props;
@@ -84,7 +84,7 @@ describe('Formly Field input Component', () => {
       ];
 
       const fixture = createTestComponent(
-          '<formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>'
+          '<formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>',
         ),
         trigger = fixture.nativeElement.querySelector('usa-input');
       const expectedValue = fixture.debugElement.query(By.css('.usa-input')).componentInstance.field.props;
@@ -107,7 +107,7 @@ describe('Formly Field input Component', () => {
       ];
 
       const fixture = createTestComponent(
-          '<formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>'
+          '<formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>',
         ),
         trigger = fixture.nativeElement.querySelector('usa-input');
       const expectedValue = fixture.debugElement.query(By.css('.usa-input')).componentInstance.field.props;
@@ -118,7 +118,11 @@ describe('Formly Field input Component', () => {
   });
 });
 
-@Component({ selector: 'formly-form-input', template: '' })
+@Component({
+  selector: 'formly-form-input',
+  template: '',
+  standalone: false,
+})
 class TestComponent {
   @ViewChild(FormlyForm, { static: false }) formlyForm: FormlyForm;
 

@@ -8,6 +8,7 @@ import { FilterService } from './filter.service';
 import { navigationConfig } from './side-navigation-filters.config';
 
 @Component({
+  standalone: false,
   selector: 'sds-side-navigation-filters',
   templateUrl: './side-navigation-filters.component.html',
 })
@@ -37,7 +38,11 @@ export class SideNavigationFiltersComponent {
 
   selectedPanel: NavigationLink = this.navigationModel.navigationLinks[1];
 
-  constructor(public filterService: FilterService, private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    public filterService: FilterService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
     this.fields = this.filterService.fields;

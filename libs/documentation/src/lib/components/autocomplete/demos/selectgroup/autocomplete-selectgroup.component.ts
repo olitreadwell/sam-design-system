@@ -6,6 +6,7 @@ import { AutocompleteSampleDataService } from './autocomplete-sample.service';
   templateUrl: './autocomplete-selectgroup.component.html',
   selector: `sds-autocomplete-selectgroup-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class AutocompleteSelectGroup {
   public settings = new SDSAutocompletelConfiguration();

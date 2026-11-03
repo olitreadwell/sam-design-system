@@ -22,11 +22,14 @@ import { Toast, ToastrService, ToastPackage } from 'ngx-toastr';
       transition('active => removed', animate('{{ easeTime }}ms {{ easing }}')),
     ]),
   ],
-
   preserveWhitespaces: false,
+  standalone: false,
 })
 export class SdsToastComponent extends Toast {
-  constructor(protected toastrService: ToastrService, public toastPackage: ToastPackage) {
+  constructor(
+    protected toastrService: ToastrService,
+    public toastPackage: ToastPackage,
+  ) {
     super(toastrService, toastPackage);
   }
 

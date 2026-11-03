@@ -7,6 +7,7 @@ import { StepperAdvancedService } from './stepper-advanced.service';
 @Component({
   selector: `subawardee-demo`,
   templateUrl: './subawardee.component.html',
+  standalone: false,
 })
 export class SubawardeeDemoComponent {
   @Input() displayInput = true;
@@ -48,6 +49,7 @@ export class SubawardeeDemoComponent {
     </div>
   `,
   providers: [StepperAdvancedService],
+  standalone: false,
 })
 export class AddSubawardeeDialogDemo implements OnInit {
   subawardeeFields: FormlyFieldConfig[];
@@ -56,7 +58,7 @@ export class AddSubawardeeDialogDemo implements OnInit {
   constructor(
     public dialogRef: SdsDialogRef<AddSubawardeeDialogDemo>,
     @Inject(SDS_DIALOG_DATA) public data: SdsFormlyDialogData,
-    private stepperAdvancedService: StepperAdvancedService
+    private stepperAdvancedService: StepperAdvancedService,
   ) {}
 
   ngOnInit() {

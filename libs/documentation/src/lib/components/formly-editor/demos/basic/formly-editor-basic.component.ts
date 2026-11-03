@@ -5,6 +5,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   templateUrl: './formly-editor-basic.component.html',
   selector: `sds-formly-editor-demo`,
+  standalone: false,
 })
 export class EditorBasic {
   textModel = 'test';

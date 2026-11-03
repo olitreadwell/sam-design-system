@@ -15,6 +15,7 @@ import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
  */
 @Directive({
   selector: '[expires]',
+  standalone: false,
 })
 export class SdsExpiresDirective {
   /**
@@ -40,5 +41,8 @@ export class SdsExpiresDirective {
   // Track to allow expires to be updated without creating multiple instances of expiring element
   private initialized = false;
 
-  constructor(private templateRef: TemplateRef<any>, private viewContainer: ViewContainerRef) {}
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private viewContainer: ViewContainerRef,
+  ) {}
 }

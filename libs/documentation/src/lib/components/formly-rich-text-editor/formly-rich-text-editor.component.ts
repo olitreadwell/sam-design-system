@@ -6,6 +6,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
   selector: 'gsa-sam-formly-rich-text-editor',
   templateUrl: './formly-rich-text-editor.component.html',
   styleUrls: ['./formly-rich-text-editor.component.scss'],
+  standalone: false,
 })
 export class FormlyRichTextEditorComponent {
   form = new UntypedFormGroup({});

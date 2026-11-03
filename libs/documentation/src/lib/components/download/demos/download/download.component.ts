@@ -6,6 +6,7 @@ import { SdsDialogService } from '@gsa-sam/components';
 @Component({
   templateUrl: 'download.component.html',
   selector: `sds-download-demo`,
+  standalone: false,
 })
 export class DownloadComponent {
   updatedModel: any = {};

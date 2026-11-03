@@ -8,6 +8,7 @@ import { SDSAutocompletelConfiguration, SDSSelectedItemModel, SelectionMode } fr
   templateUrl: './autocomplete-validation.component.html',
   selector: `sds-formly-validation-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class FormlyAutocompleteValidation {
   results: any;

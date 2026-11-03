@@ -20,6 +20,7 @@ import { SdsAccordionItemHeaderComponent } from './accordion-item-header.compone
     class: 'sds-accordion',
     '[class.sds-accordion--basic]': 'displayMode === "basic"',
   },
+  standalone: false,
 })
 export class SdsAccordionDirective extends CdkAccordion implements SdsAccordionBase, AfterContentInit {
   private _keyManager: FocusKeyManager<SdsAccordionItemHeaderComponent>;

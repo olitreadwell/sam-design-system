@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
   selector: 'sds-search-result-list',
   templateUrl: './search-result-list.component.html',
   styleUrls: ['./search-result-list.component.scss'],
+  standalone: false,
 })
 export class SdsSearchResultListComponent {
   public updateModel = new SearchModel();

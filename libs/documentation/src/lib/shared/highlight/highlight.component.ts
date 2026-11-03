@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   selector: 'docs-highlight',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: ` <pre class="highlight"><code ></code></pre> `,
+  standalone: false,
 })
 export class HighlightComponent {
   @Input() sourceCode: string;

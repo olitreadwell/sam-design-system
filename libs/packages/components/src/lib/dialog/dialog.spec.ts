@@ -1,3 +1,17 @@
+import { Input } from '@angular/core';
+
+@Component({
+  selector: 'usa-icon',
+  template: '',
+  standalone: false,
+})
+class UsaIconStubComponent {
+  @Input() icon = '';
+  @Input() size = 'lg';
+  @Input() rotate = 0;
+  @Input() classes?: string[];
+  @Input() skew?: any;
+}
 import { ComponentFixture, fakeAsync, flushMicrotasks, inject, TestBed, tick, flush } from '@angular/core/testing';
 import {
   ChangeDetectionStrategy,
@@ -15,7 +29,9 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Location } from '@angular/common';
 import { SpyLocation } from '@angular/common/testing';
 import { Directionality } from '@angular/cdk/bidi';
+import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal';
 import { SdsDialogContainerComponent } from './dialog-container.component';
+import { SdsDialogCloseDirective, SdsDialogTitleDirective } from './dialog-content.directives';
 import { OverlayContainer, ScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { ScrollDispatcher } from '@angular/cdk/scrolling';
 import { A, ESCAPE } from '@angular/cdk/keycodes';
@@ -24,8 +40,8 @@ import { SDS_DIALOG_DATA, SdsDialogService, SDS_DIALOG_DEFAULT_OPTIONS } from '.
 import { SdsDialogRef } from './dialog-ref';
 import { SdsDialogModule } from './dialog.module';
 import { Subject } from 'rxjs';
-import { allIcons as sdsAllIcons } from '@gsa-sam/ngx-uswds-icons';
-import { allIcons, NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
 
 describe('SdsDialog', () => {
   let dialog: SdsDialogService;
@@ -39,7 +55,7 @@ describe('SdsDialog', () => {
 
   beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
-      imports: [SdsDialogModule, DialogTestModule, NgxBootstrapIconsModule.pick(Object.assign(allIcons, sdsAllIcons))],
+      imports: [SdsDialogModule, DialogTestModule],
       providers: [
         { provide: Location, useClass: SpyLocation },
         {
@@ -51,6 +67,10 @@ describe('SdsDialog', () => {
       ],
     });
 
+    TestBed.overrideModule(SdsDialogModule, {
+      remove: { imports: [IconModule, NgxBootstrapIconsModule] },
+      add: { declarations: [UsaIconStubComponent], exports: [UsaIconStubComponent] },
+    });
     TestBed.compileComponents();
   }));
 
@@ -61,7 +81,7 @@ describe('SdsDialog', () => {
       mockLocation = l as SpyLocation;
       overlayContainer = oc;
       overlayContainerElement = oc.getContainerElement();
-    }
+    },
   ));
 
   afterEach(() => {
@@ -115,7 +135,7 @@ describe('SdsDialog', () => {
 
   it('should emit when dialog opening animation is complete', fakeAsync(() => {
     const dialogRef = dialog.open(PizzaMsg, { viewContainerRef: testViewContainerRef });
-    const spy = jasmine.createSpy('afterOpen spy');
+    const spy = vi.fn();
 
     dialogRef.afterOpened().subscribe(spy);
 
@@ -138,9 +158,7 @@ describe('SdsDialog', () => {
     let dialogInjector = dialogRef.componentInstance.dialogInjector;
 
     expect(dialogRef.componentInstance.dialogRef).toBe(dialogRef);
-    expect(dialogInjector.get<DirectiveWithViewContainer>(DirectiveWithViewContainer)).toBeTruthy(
-      'Expected the dialog component to be created with the injector from the viewContainerRef.'
-    );
+    expect(dialogInjector.get<DirectiveWithViewContainer>(DirectiveWithViewContainer)).toBeTruthy();
   });
 
   it('should open a dialog with a component and no ViewContainerRef', () => {
@@ -175,9 +193,32 @@ describe('SdsDialog', () => {
     expect(dialogContainerElement.getAttribute('aria-describedby')).toBe('description-element');
   });
 
+  it('should render the default close button and close its dialog when clicked', fakeAsync(() => {
+    dialog.open(PizzaMsg, { viewContainerRef: testViewContainerRef });
+    viewContainerFixture.detectChanges();
+
+    const closeButton = overlayContainerElement.querySelector(
+      'button.close-btn[aria-label="Close Modal"]',
+    ) as HTMLButtonElement;
+    expect(closeButton).toBeTruthy();
+
+    closeButton.click();
+    viewContainerFixture.detectChanges();
+    flush();
+
+    expect(overlayContainerElement.querySelector('sds-dialog-container')).toBeNull();
+  }));
+
+  it('should hide the default close button when displayCloseBtn is false', () => {
+    dialog.open(PizzaMsg, { displayCloseBtn: false, viewContainerRef: testViewContainerRef });
+    viewContainerFixture.detectChanges();
+
+    expect(overlayContainerElement.querySelector('button.close-btn[aria-label="Close Modal"]')).toBeNull();
+  });
+
   it('should close a dialog and get back a result', fakeAsync(() => {
     let dialogRef = dialog.open(PizzaMsg, { viewContainerRef: testViewContainerRef });
-    let afterCloseCallback = jasmine.createSpy('afterClose callback');
+    let afterCloseCallback = vi.fn();
 
     dialogRef.afterClosed().subscribe(afterCloseCallback);
     dialogRef.close('Charmander');
@@ -196,8 +237,8 @@ describe('SdsDialog', () => {
           viewContainerRef: testViewContainerRef,
           scrollStrategy: overlay.scrollStrategies.close(),
         });
-        const beforeCloseCallback = jasmine.createSpy('beforeClosed callback');
-        const afterCloseCallback = jasmine.createSpy('afterClosed callback');
+        const beforeCloseCallback = vi.fn();
+        const afterCloseCallback = vi.fn();
 
         dialogRef.beforeClosed().subscribe(beforeCloseCallback);
         dialogRef.afterClosed().subscribe(afterCloseCallback);
@@ -208,8 +249,8 @@ describe('SdsDialog', () => {
 
         expect(beforeCloseCallback).toHaveBeenCalledTimes(1);
         expect(afterCloseCallback).toHaveBeenCalledTimes(1);
-      })
-    )
+      }),
+    ),
   );
 
   it('should close a dialog and get back a result before it is closed', fakeAsync(() => {
@@ -219,10 +260,8 @@ describe('SdsDialog', () => {
     viewContainerFixture.detectChanges();
 
     // beforeClose should emit before dialog container is destroyed
-    const beforeCloseHandler = jasmine.createSpy('beforeClose callback').and.callFake(() => {
-      expect(overlayContainerElement.querySelector('sds-dialog-container')).not.toBeNull(
-        'dialog container exists when beforeClose is called'
-      );
+    const beforeCloseHandler = vi.fn().mockImplementation(() => {
+      expect(overlayContainerElement.querySelector('sds-dialog-container')).not.toBeNull();
     });
 
     dialogRef.beforeClosed().subscribe(beforeCloseHandler);
@@ -259,20 +298,14 @@ describe('SdsDialog', () => {
     onPushFixture.detectChanges();
     flushMicrotasks();
 
-    expect(overlayContainerElement.querySelectorAll('sds-dialog-container').length).toBe(
-      1,
-      'Expected one open dialog.'
-    );
+    expect(overlayContainerElement.querySelectorAll('sds-dialog-container').length).toBe(1);
 
     dialogRef.close();
     flushMicrotasks();
     onPushFixture.detectChanges();
     tick(500);
 
-    expect(overlayContainerElement.querySelectorAll('sds-dialog-container').length).toBe(
-      0,
-      'Expected no open dialogs.'
-    );
+    expect(overlayContainerElement.querySelectorAll('sds-dialog-container').length).toBe(0);
   }));
 
   it('should close when clicking on the overlay backdrop', fakeAsync(() => {
@@ -296,7 +329,7 @@ describe('SdsDialog', () => {
       viewContainerRef: testViewContainerRef,
     });
 
-    const spy = jasmine.createSpy('backdropClick spy');
+    const spy = vi.fn();
     dialogRef.backdropClick().subscribe(spy);
 
     viewContainerFixture.detectChanges();
@@ -317,7 +350,7 @@ describe('SdsDialog', () => {
   it('should emit the keyboardEvent stream when key events target the overlay', fakeAsync(() => {
     const dialogRef = dialog.open(PizzaMsg, { viewContainerRef: testViewContainerRef });
 
-    const spy = jasmine.createSpy('keyboardEvent spy');
+    const spy = vi.fn();
     dialogRef.keydownEvents().subscribe(spy);
 
     viewContainerFixture.detectChanges();
@@ -336,7 +369,7 @@ describe('SdsDialog', () => {
       expect(
         dialog.open(PizzaMsg, {
           viewContainerRef: testViewContainerRef,
-        })
+        }),
       ).toBe(ref);
     });
   });
@@ -344,7 +377,7 @@ describe('SdsDialog', () => {
   it('should notify the observers if all open dialogs have finished closing', fakeAsync(() => {
     const ref1 = dialog.open(PizzaMsg, { viewContainerRef: testViewContainerRef });
     const ref2 = dialog.open(ContentElementDialog, { viewContainerRef: testViewContainerRef });
-    const spy = jasmine.createSpy('afterAllClosed spy');
+    const spy = vi.fn();
 
     dialog.afterAllClosed.subscribe(spy);
 
@@ -361,7 +394,7 @@ describe('SdsDialog', () => {
   }));
 
   it('should emit the afterAllClosed stream on subscribe if there are no open dialogs', () => {
-    const spy = jasmine.createSpy('afterAllClosed spy');
+    const spy = vi.fn();
 
     dialog.afterAllClosed.subscribe(spy);
 
@@ -378,6 +411,67 @@ describe('SdsDialog', () => {
     let overlayPane = overlayContainerElement.querySelector('.cdk-overlay-pane') as HTMLElement;
 
     expect(overlayPane.style.width).toBe('500px');
+  });
+
+  it('should support standard width presets (small, medium, large)', fakeAsync(() => {
+    let dialogRef = dialog.open(PizzaMsg, { width: 'small' });
+    viewContainerFixture.detectChanges();
+    let overlayPane = overlayContainerElement.querySelector('.cdk-overlay-pane') as HTMLElement;
+    expect(overlayPane.style.width).toBe('370px');
+    dialogRef.close();
+    viewContainerFixture.detectChanges();
+    flush();
+
+    dialogRef = dialog.open(PizzaMsg, { width: 'medium' });
+    viewContainerFixture.detectChanges();
+    overlayPane = overlayContainerElement.querySelector('.cdk-overlay-pane') as HTMLElement;
+    expect(overlayPane.style.width).toBe('730px');
+    dialogRef.close();
+    viewContainerFixture.detectChanges();
+    flush();
+
+    dialogRef = dialog.open(PizzaMsg, { width: 'large' });
+    viewContainerFixture.detectChanges();
+    overlayPane = overlayContainerElement.querySelector('.cdk-overlay-pane') as HTMLElement;
+    expect(overlayPane.style.width).toBe('960px');
+    dialogRef.close();
+    viewContainerFixture.detectChanges();
+    flush();
+  }));
+
+  it('should support slideOut boolean and SlideOutConfig', fakeAsync(() => {
+    let dialogRef = dialog.open(PizzaMsg, { slideOut: true });
+    viewContainerFixture.detectChanges();
+    let container = overlayContainerElement.querySelector('sds-dialog-container') as HTMLElement;
+    expect(container.classList.contains('dialog-slide-out')).toBe(true);
+    dialogRef.close();
+    viewContainerFixture.detectChanges();
+    flush();
+
+    dialogRef = dialog.open(PizzaMsg, { slideOut: { width: '20rem', time: '500ms' } });
+    viewContainerFixture.detectChanges();
+    container = overlayContainerElement.querySelector('sds-dialog-container') as HTMLElement;
+    expect(container.classList.contains('dialog-slide-out')).toBe(true);
+    expect(container.style.width).toBe('20rem');
+    dialogRef.close();
+    viewContainerFixture.detectChanges();
+    flush();
+  }));
+
+  it('should throw error when attaching portal after content is already attached', () => {
+    const dialogRef = dialog.open(PizzaMsg);
+    viewContainerFixture.detectChanges();
+    const container = dialogRef._containerInstance;
+    expect(() => container.attachComponentPortal(new ComponentPortal(PizzaMsg))).toThrowError(
+      /Attempting to attach dialog content after content is already attached/,
+    );
+
+    const templateRefFixture = TestBed.createComponent(ComponentWithTemplateRef);
+    templateRefFixture.detectChanges();
+    const templateRef = templateRefFixture.componentInstance.templateRef;
+    expect(() => container.attachTemplatePortal(new TemplatePortal(templateRef, testViewContainerRef))).toThrowError(
+      /Attempting to attach dialog content after content is already attached/,
+    );
   });
 
   it('should override the height of the overlay pane', () => {
@@ -411,7 +505,7 @@ describe('SdsDialog', () => {
 
     let overlayPane = overlayContainerElement.querySelector('.cdk-overlay-pane') as HTMLElement;
 
-    expect(overlayPane.style.maxWidth).toBe('80vw', 'Expected dialog to set a default max-width on overlay pane');
+    expect(overlayPane.style.maxWidth).toBe('80vw');
 
     dialogRef.close();
 
@@ -606,7 +700,7 @@ describe('SdsDialog', () => {
   it('should set the proper animation states', () => {
     let dialogRef = dialog.open(PizzaMsg, { viewContainerRef: testViewContainerRef });
     let dialogContainer: SdsDialogContainerComponent = viewContainerFixture.debugElement.query(
-      By.directive(SdsDialogContainerComponent)
+      By.directive(SdsDialogContainerComponent),
     ).componentInstance;
 
     expect(dialogContainer._state).toBe('enter');
@@ -657,8 +751,8 @@ describe('SdsDialog', () => {
   }));
 
   it('should complete open and close streams when the injectable is destroyed', fakeAsync(() => {
-    const afterOpenedSpy = jasmine.createSpy('after opened spy');
-    const afterAllClosedSpy = jasmine.createSpy('after all closed spy');
+    const afterOpenedSpy = vi.fn();
+    const afterAllClosedSpy = vi.fn();
     const afterOpenedSubscription = dialog.afterOpened.subscribe({ complete: afterOpenedSpy });
     const afterAllClosedSubscription = dialog.afterAllClosed.subscribe({
       complete: afterAllClosedSpy,
@@ -688,7 +782,7 @@ describe('SdsDialog', () => {
 
   it('should have the componentInstance available in the afterClosed callback', fakeAsync(() => {
     let dialogRef = dialog.open(PizzaMsg);
-    let spy = jasmine.createSpy('afterClosed spy');
+    let spy = vi.fn();
 
     flushMicrotasks();
     viewContainerFixture.detectChanges();
@@ -696,7 +790,7 @@ describe('SdsDialog', () => {
 
     dialogRef.afterClosed().subscribe(() => {
       spy();
-      expect(dialogRef.componentInstance).toBeTruthy('Expected component instance to be defined.');
+      expect(dialogRef.componentInstance).toBeTruthy();
     });
 
     dialogRef.close();
@@ -712,7 +806,7 @@ describe('SdsDialog', () => {
   it('should be able to attach a custom scroll strategy', fakeAsync(() => {
     const scrollStrategy: ScrollStrategy = {
       attach: () => {},
-      enable: jasmine.createSpy('scroll strategy enable spy'),
+      enable: vi.fn(),
       disable: () => {},
     };
 
@@ -752,7 +846,7 @@ describe('SdsDialog', () => {
     viewContainerFixture.detectChanges();
     flush();
 
-    expect(dialogRef.componentInstance).toBeFalsy('Expected reference to have been cleared.');
+    expect(dialogRef.componentInstance).toBeFalsy();
   }));
 
   it('should assign a unique id to each dialog', () => {
@@ -787,17 +881,14 @@ describe('SdsDialog', () => {
     viewContainerFixture.detectChanges();
     flush();
 
-    expect(sibling.getAttribute('aria-hidden')).toBe('true', 'Expected sibling to be hidden');
-    expect(overlayContainerElement.hasAttribute('aria-hidden')).toBe(
-      false,
-      'Expected overlay container not to be hidden.'
-    );
+    expect(sibling.getAttribute('aria-hidden')).toBe('true');
+    expect(overlayContainerElement.hasAttribute('aria-hidden')).toBe(false);
 
     dialogRef.close();
     viewContainerFixture.detectChanges();
     flush();
 
-    expect(sibling.hasAttribute('aria-hidden')).toBe(false, 'Expected sibling to no longer be hidden.');
+    expect(sibling.hasAttribute('aria-hidden')).toBe(false);
     sibling.parentNode!.removeChild(sibling);
   }));
 
@@ -811,13 +902,13 @@ describe('SdsDialog', () => {
     viewContainerFixture.detectChanges();
     flush();
 
-    expect(sibling.getAttribute('aria-hidden')).toBe('true', 'Expected sibling to be hidden.');
+    expect(sibling.getAttribute('aria-hidden')).toBe('true');
 
     dialogRef.close();
     viewContainerFixture.detectChanges();
     flush();
 
-    expect(sibling.getAttribute('aria-hidden')).toBe('true', 'Expected sibling to remain hidden.');
+    expect(sibling.getAttribute('aria-hidden')).toBe('true');
     sibling.parentNode!.removeChild(sibling);
   }));
 
@@ -831,7 +922,7 @@ describe('SdsDialog', () => {
     viewContainerFixture.detectChanges();
     flush();
 
-    expect(sibling.hasAttribute('aria-hidden')).toBe(false, 'Expected live element not to be hidden.');
+    expect(sibling.hasAttribute('aria-hidden')).toBe(false);
     sibling.parentNode!.removeChild(sibling);
   }));
 
@@ -842,13 +933,13 @@ describe('SdsDialog', () => {
     });
 
     const pane = overlayContainerElement.querySelector('.cdk-overlay-pane') as HTMLElement;
-    expect(pane.classList).not.toContain('custom-class-one', 'Expected class to be initially missing');
+    expect(pane.classList).not.toContain('custom-class-one');
 
     dialogRef.addPanelClass('custom-class-one');
-    expect(pane.classList).toContain('custom-class-one', 'Expected class to be added');
+    expect(pane.classList).toContain('custom-class-one');
 
     dialogRef.removePanelClass('custom-class-one');
-    expect(pane.classList).not.toContain('custom-class-one', 'Expected class to be removed');
+    expect(pane.classList).not.toContain('custom-class-one');
   });
 
   describe('disableClose option', () => {
@@ -978,10 +1069,7 @@ describe('SdsDialog', () => {
       viewContainerFixture.detectChanges();
       flushMicrotasks();
 
-      expect(document.activeElement!.tagName).toBe(
-        'BUTTON',
-        'Expected first tabbable element (button) in the dialog to be focused.'
-      );
+      expect(document.activeElement!.tagName).toBe('BUTTON');
     }));
 
     it('should allow disabling focus of the first tabbable element', fakeAsync(() => {
@@ -1009,25 +1097,16 @@ describe('SdsDialog', () => {
       viewContainerFixture.detectChanges();
       flushMicrotasks();
 
-      expect(document.activeElement!.id).not.toBe(
-        'dialog-trigger',
-        'Expected the focus to change when dialog was opened.'
-      );
+      expect(document.activeElement!.id).not.toBe('dialog-trigger');
 
       dialogRef.close();
-      expect(document.activeElement!.id).not.toBe(
-        'dialog-trigger',
-        'Expcted the focus not to have changed before the animation finishes.'
-      );
+      expect(document.activeElement!.id).not.toBe('dialog-trigger');
 
       flushMicrotasks();
       viewContainerFixture.detectChanges();
       tick(500);
 
-      expect(document.activeElement!.id).toBe(
-        'dialog-trigger',
-        'Expected that the trigger was refocused after the dialog is closed.'
-      );
+      expect(document.activeElement!.id).toBe('dialog-trigger');
 
       document.body.removeChild(button);
     }));
@@ -1056,10 +1135,7 @@ describe('SdsDialog', () => {
       viewContainerFixture.detectChanges();
       flushMicrotasks();
 
-      expect(document.activeElement!.id).toBe(
-        'input-to-be-focused',
-        'Expected that the trigger was refocused after the dialog is closed.'
-      );
+      expect(document.activeElement!.id).toBe('input-to-be-focused');
 
       document.body.removeChild(button);
       document.body.removeChild(input);
@@ -1081,17 +1157,14 @@ describe('SdsDialog', () => {
       viewContainerFixture.detectChanges();
       flushMicrotasks();
 
-      expect(document.activeElement!.id).not.toBe(
-        'dialog-trigger',
-        'Expected the focus to change when dialog was opened.'
-      );
+      expect(document.activeElement!.id).not.toBe('dialog-trigger');
 
       dialogRef.close();
       flushMicrotasks();
       viewContainerFixture.detectChanges();
       tick(500);
 
-      expect(document.activeElement!.id).not.toBe('dialog-trigger', 'Expected focus not to have been restored.');
+      expect(document.activeElement!.id).not.toBe('dialog-trigger');
 
       document.body.removeChild(button);
     }));
@@ -1108,6 +1181,16 @@ describe('SdsDialog', () => {
       }));
 
       runContentElementTests();
+
+      it('should use a dialog reference assigned to the close directive', () => {
+        const assignedDialogRef = { close: vi.fn() } as unknown as SdsDialogRef<any>;
+        const contentElementDialog = dialogRef.componentInstance as ContentElementDialog;
+
+        contentElementDialog.closeDirective.dialogRef = assignedDialogRef;
+        contentElementDialog.closeDirective.dialogRef.close();
+
+        expect(assignedDialogRef.close).toHaveBeenCalledWith();
+      });
     });
 
     describe('inside template portal', () => {
@@ -1157,7 +1240,7 @@ describe('SdsDialog', () => {
       });
 
       it('should return the [sds-dialog-close] result when clicking the close button', fakeAsync(() => {
-        let afterCloseCallback = jasmine.createSpy('afterClose callback');
+        let afterCloseCallback = vi.fn();
         dialogRef.afterClosed().subscribe(afterCloseCallback);
 
         (overlayContainerElement.querySelector('button.close-with-true') as HTMLElement).click();
@@ -1174,11 +1257,8 @@ describe('SdsDialog', () => {
         flush();
         viewContainerFixture.detectChanges();
 
-        expect(title.id).toBeTruthy('Expected title element to have an id.');
-        expect(container.getAttribute('aria-labelledby')).toBe(
-          title.id,
-          'Expected the aria-labelledby to match the title id.'
-        );
+        expect(title.id).toBeTruthy();
+        expect(container.getAttribute('aria-labelledby')).toBe(title.id);
       }));
     }
   });
@@ -1210,6 +1290,50 @@ describe('SdsDialog', () => {
   });
 });
 
+describe('SdsDialog content directives with a conventionally provided SdsDialogRef', () => {
+  let close: ReturnType<typeof vi.fn>;
+  let container: { _ariaLabelledBy: string | null };
+  let fixture: ComponentFixture<DialogContentWithMockedRef>;
+
+  beforeEach(() => {
+    close = vi.fn();
+    container = { _ariaLabelledBy: null };
+
+    TestBed.configureTestingModule({
+      imports: [SdsDialogModule],
+      declarations: [DialogContentWithMockedRef],
+      providers: [
+        {
+          provide: SdsDialogRef,
+          useValue: { close, id: 'mock-dialog', _containerInstance: container },
+        },
+      ],
+    });
+    TestBed.overrideModule(SdsDialogModule, {
+      remove: { imports: [IconModule, NgxBootstrapIconsModule] },
+      add: { declarations: [UsaIconStubComponent], exports: [UsaIconStubComponent] },
+    });
+
+    fixture = TestBed.createComponent(DialogContentWithMockedRef);
+    fixture.detectChanges();
+  });
+
+  it('closes using a SdsDialogRef mock provided by its class token', () => {
+    fixture.nativeElement.querySelector('button').click();
+
+    expect(close).toHaveBeenCalledWith('result');
+  });
+
+  it('sets the title on a SdsDialogRef mock provided by its class token', fakeAsync(() => {
+    flushMicrotasks();
+
+    const title = fixture.debugElement
+      .query(By.directive(SdsDialogTitleDirective))
+      .injector.get(SdsDialogTitleDirective);
+    expect(container._ariaLabelledBy).toBe(title.id);
+  }));
+});
+
 describe('SdsDialog with a parent SdsDialog', () => {
   let parentDialog: SdsDialogService;
   let childDialog: SdsDialogService;
@@ -1232,6 +1356,10 @@ describe('SdsDialog with a parent SdsDialog', () => {
       ],
     });
 
+    TestBed.overrideModule(SdsDialogModule, {
+      remove: { imports: [IconModule, NgxBootstrapIconsModule] },
+      add: { declarations: [UsaIconStubComponent], exports: [UsaIconStubComponent] },
+    });
     TestBed.compileComponents();
   }));
 
@@ -1252,32 +1380,26 @@ describe('SdsDialog with a parent SdsDialog', () => {
     fixture.detectChanges();
     flush();
 
-    expect(overlayContainerElement.textContent).toContain('Pizza', 'Expected a dialog to be opened');
+    expect(overlayContainerElement.textContent).toContain('Pizza');
 
     childDialog.closeAll();
     fixture.detectChanges();
     flush();
 
-    expect(overlayContainerElement.textContent!.trim()).toBe(
-      '',
-      'Expected closeAll on child SdsDialog to close dialog opened by parent'
-    );
+    expect(overlayContainerElement.textContent!.trim()).toBe('');
   }));
 
   it('should close dialogs opened by a child when calling closeAll on a parent SdsDialog', fakeAsync(() => {
     childDialog.open(PizzaMsg);
     fixture.detectChanges();
 
-    expect(overlayContainerElement.textContent).toContain('Pizza', 'Expected a dialog to be opened');
+    expect(overlayContainerElement.textContent).toContain('Pizza');
 
     parentDialog.closeAll();
     fixture.detectChanges();
     flush();
 
-    expect(overlayContainerElement.textContent!.trim()).toBe(
-      '',
-      'Expected closeAll on parent SdsDialog to close dialog opened by child'
-    );
+    expect(overlayContainerElement.textContent!.trim()).toBe('');
   }));
 
   it('should close the top dialog via the escape key', fakeAsync(() => {
@@ -1295,13 +1417,13 @@ describe('SdsDialog with a parent SdsDialog', () => {
     fixture.detectChanges();
     flush();
 
-    expect(overlayContainerElement.textContent).toContain('Pizza', 'Expected a dialog to be opened');
+    expect(overlayContainerElement.textContent).toContain('Pizza');
 
     childDialog.ngOnDestroy();
     fixture.detectChanges();
     flush();
 
-    expect(overlayContainerElement.textContent).toContain('Pizza', 'Expected a dialog to be opened');
+    expect(overlayContainerElement.textContent).toContain('Pizza');
   }));
 });
 
@@ -1331,6 +1453,10 @@ describe('SdsDialog with default options', () => {
       providers: [{ provide: SDS_DIALOG_DEFAULT_OPTIONS, useValue: defaultConfig }],
     });
 
+    TestBed.overrideModule(SdsDialogModule, {
+      remove: { imports: [IconModule, NgxBootstrapIconsModule] },
+      add: { declarations: [UsaIconStubComponent], exports: [UsaIconStubComponent] },
+    });
     TestBed.compileComponents();
   }));
 
@@ -1391,7 +1517,10 @@ describe('SdsDialog with default options', () => {
   }));
 });
 
-@Directive({ selector: 'dir-with-view-container' })
+@Directive({
+  selector: 'dir-with-view-container',
+  standalone: false,
+})
 class DirectiveWithViewContainer {
   constructor(public viewContainerRef: ViewContainerRef) {}
 }
@@ -1399,6 +1528,7 @@ class DirectiveWithViewContainer {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: 'hello',
+  standalone: false,
 })
 class ComponentWithOnPushViewContainer {
   constructor(public viewContainerRef: ViewContainerRef) {}
@@ -1407,6 +1537,7 @@ class ComponentWithOnPushViewContainer {
 @Component({
   selector: 'arbitrary-component',
   template: `<dir-with-view-container></dir-with-view-container>`,
+  standalone: false,
 })
 class ComponentWithChildViewContainer {
   @ViewChild(DirectiveWithViewContainer, { static: false }) childWithViewContainer: DirectiveWithViewContainer;
@@ -1421,6 +1552,7 @@ class ComponentWithChildViewContainer {
   template: `<ng-template let-data let-dialogRef="dialogRef">
     Cheese {{ localValue }} {{ data?.value }}{{ setDialogRef(dialogRef) }}</ng-template
   >`,
+  standalone: false,
 })
 class ComponentWithTemplateRef {
   localValue: string;
@@ -1435,14 +1567,24 @@ class ComponentWithTemplateRef {
 }
 
 /** Simple component for testing ComponentPortal. */
-@Component({ template: '<p>Pizza</p> <input> <button>Close</button>' })
+@Component({
+  template: '<p>Pizza</p> <input> <button>Close</button>',
+  standalone: false,
+})
 class PizzaMsg {
   constructor(
     public dialogRef: SdsDialogRef<PizzaMsg>,
     public dialogInjector: Injector,
-    public directionality: Directionality
+    public directionality: Directionality,
   ) {}
 }
+
+@Component({
+  template: `<h1 sds-dialog-title>Title</h1>
+    <button [sds-dialog-close]="'result'">Close</button>`,
+  standalone: false,
+})
+class DialogContentWithMockedRef {}
 
 @Component({
   template: `
@@ -1455,8 +1597,11 @@ class PizzaMsg {
       <div sds-dialog-close>Should not close</div>
     </sds-dialog-actions>
   `,
+  standalone: false,
 })
-class ContentElementDialog {}
+class ContentElementDialog {
+  @ViewChild(SdsDialogCloseDirective) closeDirective: SdsDialogCloseDirective;
+}
 
 @Component({
   template: `
@@ -1471,6 +1616,7 @@ class ContentElementDialog {}
       </sds-dialog-actions>
     </ng-template>
   `,
+  standalone: false,
 })
 class ComponentWithContentElementTemplateRef {
   @ViewChild(TemplateRef, { static: false }) templateRef: TemplateRef<any>;
@@ -1479,18 +1625,25 @@ class ComponentWithContentElementTemplateRef {
 @Component({
   template: '',
   providers: [SdsDialogService],
+  standalone: false,
 })
 class ComponentThatProvidesSdsDialog {
   constructor(public dialog: SdsDialogService) {}
 }
 
 /** Simple component for testing ComponentPortal. */
-@Component({ template: '' })
+@Component({
+  template: '',
+  standalone: false,
+})
 class DialogWithInjectedData {
   constructor(@Inject(SDS_DIALOG_DATA) public data: any) {}
 }
 
-@Component({ template: '<p>Pasta</p>' })
+@Component({
+  template: '<p>Pasta</p>',
+  standalone: false,
+})
 class DialogWithoutFocusableElements {}
 
 // Create a real (non-test) NgModule as a workaround for

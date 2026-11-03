@@ -13,6 +13,7 @@ import { Component, Input, TemplateRef } from '@angular/core';
       <span class="text-bold">{{ value ? value : '&mdash;' }}</span>
     </ng-template>
   `,
+  standalone: false,
 })
 export class ReadonlyInputComponent {
   @Input() value: any;

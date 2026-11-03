@@ -56,6 +56,7 @@ export interface SdsMenuInterface<T = any> {
   encapsulation: ViewEncapsulation.None,
   animations: [sdsMenuAnimations.transformMenu],
   providers: [{ provide: SDS_MENU_TOKEN, useExisting: SdsMenuComponent }],
+  standalone: false,
 })
 export class SdsMenuComponent implements OnInit, AfterContentInit, OnDestroy, SdsMenuInterface<SdsMenuItemComponent> {
   /** After | Before the menu triger element */

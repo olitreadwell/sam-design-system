@@ -13,11 +13,14 @@ import { coerceNumberProperty } from '@angular/cdk/coercion';
 import { ViewportRuler, OverlayConfig, Overlay, OverlayRef, ConnectedPosition } from '@angular/cdk/overlay';
 import { Subscription, merge } from 'rxjs';
 import { startWith } from 'rxjs/operators';
-import { PortalInjector, ComponentPortal } from '@angular/cdk/portal';
+import { ComponentPortal } from '@angular/cdk/portal';
 import { SdsTruncatedTextContainerComponent } from './truncate-text-container.component';
 import { SDS_TRUNCATED_TEXT_DATA } from './truncates-text-base';
 
-@Directive({ selector: '[sdsTruncateTextByLine]' })
+@Directive({
+  selector: '[sdsTruncateTextByLine]',
+  standalone: false,
+})
 export class SdsTruncateTextByLineDirective implements OnInit, OnDestroy, AfterViewInit {
   /** Maximum lines of text limit */
   @Input('sdsTruncateTextByLine')
@@ -52,7 +55,7 @@ export class SdsTruncateTextByLineDirective implements OnInit, OnDestroy, AfterV
     private _injector: Injector,
     private _element: ElementRef,
     private _viewportRuler: ViewportRuler,
-    private _viewContainerRef: ViewContainerRef
+    private _viewContainerRef: ViewContainerRef,
   ) {}
 
   ngOnInit() {
@@ -118,10 +121,10 @@ export class SdsTruncateTextByLineDirective implements OnInit, OnDestroy, AfterV
 
   /** Attach a ComponentPortal to the overlay **/
   private _attachContainer(overlay: OverlayRef) {
-    const injector = new PortalInjector(
-      this._injector,
-      new WeakMap([[SDS_TRUNCATED_TEXT_DATA, { text: this.initialText }]])
-    );
+    const injector = Injector.create({
+      parent: this._injector,
+      providers: [{ provide: SDS_TRUNCATED_TEXT_DATA, useValue: { text: this.initialText } }],
+    });
     const containerPortal = new ComponentPortal(SdsTruncatedTextContainerComponent, this._viewContainerRef, injector);
     const containerRef = overlay.attach(containerPortal);
 

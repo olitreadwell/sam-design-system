@@ -4,5 +4,6 @@ import { Component } from '@angular/core';
   templateUrl: './icon-skewing.component.html',
   styleUrls: ['./icon-skewing.component.scss'],
   selector: `usa-icon-skewing-demo`,
+  standalone: false,
 })
 export class IconSkewingComponent {}

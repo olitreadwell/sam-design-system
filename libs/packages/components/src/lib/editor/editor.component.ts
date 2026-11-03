@@ -1,4 +1,3 @@
-import { DOCUMENT } from '@angular/common';
 import {
   Component,
   forwardRef,
@@ -8,7 +7,9 @@ import {
   ViewChild,
   ElementRef,
   Inject,
+  DOCUMENT,
 } from '@angular/core';
+import DOMPurify from 'dompurify';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -39,6 +40,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SdsEditorComponent implements ControlValueAccessor {
   @ViewChild('searchInput', { read: ElementRef, static: true }) searchInput: ElementRef;
@@ -52,7 +54,10 @@ export class SdsEditorComponent implements ControlValueAccessor {
   private _onChange = (_: any) => {};
   private _onTouched = () => {};
 
-  constructor(private cd: ChangeDetectorRef, @Inject(DOCUMENT) private _document: any) {}
+  constructor(
+    private cd: ChangeDetectorRef,
+    @Inject(DOCUMENT) private _document: any,
+  ) {}
 
   // Helper method to programatically update a value of the model on blur
   onBlur(value) {
@@ -75,13 +80,12 @@ export class SdsEditorComponent implements ControlValueAccessor {
   }
 
   // Validate regex and highlight first charecter of the failure
-  validateRegex(value) {
-    const rawValue = value
-      .replaceAll(/<\/?mark[^>]*>/g, '')
-      .replaceAll(/<\/?span[^>]*>/g, '')
-      .replaceAll(/<\/?font[^>]*>/g, '');
+  validateRegex(value: string) {
+    const documentFragment = this._document.createElement('div');
+    documentFragment.innerHTML = value;
+    const rawValue = documentFragment.textContent || '';
     const regex = new RegExp(this.regex, 'g');
-    let res = '';
+    let res = rawValue;
     let result = regex.exec(rawValue);
     if (result) {
       let index = result.index;
@@ -91,10 +95,8 @@ export class SdsEditorComponent implements ControlValueAccessor {
         rawValue.substring(index, index + 1) +
         '</mark>' +
         rawValue.substring(index + 1, index + rawValue.length);
-      this.searchInput.nativeElement.innerHTML = res;
-    } else {
-      this.searchInput.nativeElement.innerHTML = rawValue;
     }
+    this.searchInput.nativeElement.innerHTML = DOMPurify.sanitize(res);
   }
 
   // ControlValueAccessor (and Formly) is trying to update the value of the FormControl (our custom component) programatically
@@ -126,7 +128,7 @@ export class SdsEditorComponent implements ControlValueAccessor {
   getCaretCharacterOffsetWithin(element) {
     let caretOffset = 0;
     if (typeof window.getSelection != 'undefined') {
-      let range = window.getSelection().getRangeAt(0);
+      let range = globalThis.getSelection().getRangeAt(0);
       let preCaretRange = range.cloneRange();
       preCaretRange.selectNodeContents(element);
       preCaretRange.setEnd(range.endContainer, range.endOffset);
@@ -151,7 +153,7 @@ export class SdsEditorComponent implements ControlValueAccessor {
 
       let startPosition = childNodeIndex === 0 ? pos : pos - firstNodeLength - 1;
       let range = this._document.createRange();
-      let sel = window.getSelection();
+      let sel = globalThis.getSelection();
       range.setStart(this.searchInput.nativeElement.childNodes[childNodeIndex], startPosition);
       range.collapse(true);
       sel.removeAllRanges();

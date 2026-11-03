@@ -5,6 +5,7 @@ import { SdsTreeTableComponent } from 'libs/packages/components/src/lib/public-a
 @Component({
   selector: `tree-table-basic`,
   templateUrl: `./tree-table-basic.component.html`,
+  standalone: false,
 })
 export class TreeTableBasicComponent {
   @ViewChild(SdsTreeTableComponent) treeTable: SdsTreeTableComponent;

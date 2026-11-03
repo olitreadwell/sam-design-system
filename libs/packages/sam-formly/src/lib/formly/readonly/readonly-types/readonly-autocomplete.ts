@@ -14,6 +14,7 @@ import { SDSAutocompletelConfiguration } from '@gsa-sam/components';
       <span class="text-bold" [innerHTML]="displayValue"></span>
     </ng-template>
   `,
+  standalone: false,
 })
 export class ReadonlyAutocompleteComponent implements OnInit {
   @Input() value: any;

@@ -19,6 +19,7 @@ import { MatButtonToggleChange } from '@angular/material/button-toggle';
       <ng-content #content></ng-content>
     </ng-template>
   `,
+  standalone: false,
 })
 export class SdsButtonGroupOptionComponent {
   @ViewChild('buttonGroupTemplate') buttonGroupTemplate: TemplateRef<any>;
@@ -36,6 +37,7 @@ export class SdsButtonGroupOptionComponent {
     class: 'sds-button-group--segmented',
     '[class.sds-button-group--modular]': 'modularDashboard',
   },
+  standalone: false,
 })
 export class SdsButtonGroupComponent implements OnInit {
   ngOnInit(): void {

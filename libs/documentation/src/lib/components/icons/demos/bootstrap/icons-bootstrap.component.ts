@@ -7,6 +7,7 @@ import { kebabCase } from 'lodash-es';
   styleUrls: ['./icons-bootstrap.component.scss'],
   selector: `sds-icons-bootstrap-demo`,
   preserveWhitespaces: true,
+  standalone: false,
 })
 export class IconsBootstrap {
   bootstrapIcons = Object.keys(allIcons)

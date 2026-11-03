@@ -4,6 +4,7 @@ import { ActionMenuModel, ActionMenuMode } from './action-menu.model';
 @Component({
   selector: 'sds-actions-menu',
   templateUrl: 'actions-menu.component.html',
+  standalone: false,
 })
 export class SdsActionsMenuComponent {
   actionModes = ActionMenuMode;
@@ -24,6 +25,6 @@ export class SdsActionsMenuComponent {
   }
 
   getDisabled(mode) {
-    return (mode = this.actionModes.DISABLED) ? true : false;
+    return mode === this.actionModes.DISABLED;
   }
 }

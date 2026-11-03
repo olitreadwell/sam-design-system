@@ -79,6 +79,7 @@ export function getFormWrapper(name) {
       }
     `,
   ],
+  standalone: false,
 })
 export class DocumentationAPIComponent implements OnInit {
   api: apiDesc;

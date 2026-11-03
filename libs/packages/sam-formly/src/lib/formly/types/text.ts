@@ -7,6 +7,7 @@ import { SdsTextComponent } from '@gsa-sam/components';
   selector: 'sds-formly-field-text',
   template: ` <sds-text [formControl]="formControl"></sds-text> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class FormlyFieldTextComponent extends AbstractSdsFormly {
   @ViewChild(SdsTextComponent, { static: true }) public template: SdsTextComponent;

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   templateUrl: './basic.component.html',
   selector: `sds-table-basic-demo`,
+  standalone: false,
 })
 export class TableBasicComponent {
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'requests', 'date'];

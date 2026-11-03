@@ -14,6 +14,7 @@ import { Subject } from 'rxjs';
       >
     </ng-container>
   `,
+  standalone: false,
 })
 export class SdsTextChildComponent {
   @Input() items;

@@ -8,6 +8,7 @@ import { SDSAutocompletelConfiguration, SDSSelectedItemModel, SelectionMode } fr
   templateUrl: './autocomplete-freetext.component.html',
   selector: `sds-formly-autocomplete-freetext-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class FormlyAutocompleteFreetext {
   results: any;

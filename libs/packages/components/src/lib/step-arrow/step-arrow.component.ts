@@ -4,6 +4,7 @@ import { Component, Input } from '@angular/core';
   selector: 'sds-step-arrow',
   templateUrl: './step-arrow.component.html',
   styleUrls: ['./step-arrow.component.scss'],
+  standalone: false,
 })
 export class SdsStepArrowComponent {
   @Input() status: string = 'inactive';

@@ -5,6 +5,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   templateUrl: './descriptionwrapper-custom-text.component.html',
   selector: `sds-descriptionwrapper-demo`,
+  standalone: false,
 })
 export class DescriptionWrapperCustomText {
   form = new UntypedFormGroup({});

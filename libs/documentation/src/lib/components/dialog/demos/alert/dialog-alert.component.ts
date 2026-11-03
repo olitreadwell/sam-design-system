@@ -16,6 +16,7 @@ export interface AlertData {
 @Component({
   selector: 'sds-dialog-sample-alert',
   templateUrl: './alert-template.html',
+  standalone: false,
 })
 export class AlertComponent {
   constructor(@Inject(SDS_DIALOG_DATA) public data: AlertData) {}
@@ -28,6 +29,7 @@ export class AlertComponent {
 @Component({
   selector: 'sds-modal-sample',
   templateUrl: './dialog-alert.component.html',
+  standalone: false,
 })
 export class DialogAlert {
   form = new UntypedFormGroup({});

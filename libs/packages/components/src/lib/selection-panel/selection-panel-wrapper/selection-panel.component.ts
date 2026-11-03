@@ -5,6 +5,7 @@ import { SelectionPanelModel } from '../model/selection-panel.model';
 @Component({
   selector: 'sds-selection-panel',
   templateUrl: './selection-panel.component.html',
+  standalone: false,
 })
 export class SdsSelectionPanelComponent {
   /**

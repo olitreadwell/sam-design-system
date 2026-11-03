@@ -1,6 +1,6 @@
 import { Directionality } from '@angular/cdk/bidi';
 import { Overlay, OverlayConfig, OverlayContainer, OverlayRef, ScrollStrategy } from '@angular/cdk/overlay';
-import { ComponentPortal, ComponentType, PortalInjector, TemplatePortal } from '@angular/cdk/portal';
+import { ComponentPortal, ComponentType, TemplatePortal } from '@angular/cdk/portal';
 import { Location } from '@angular/common';
 import {
   Inject,
@@ -10,6 +10,7 @@ import {
   OnDestroy,
   Optional,
   SkipSelf,
+  StaticProvider,
   TemplateRef,
 } from '@angular/core';
 import { defer, Observable, of as observableOf, Subject } from 'rxjs';
@@ -17,6 +18,7 @@ import { startWith } from 'rxjs/operators';
 import { SdsDialogConfig } from './dialog-config';
 import { SdsDialogContainerComponent } from './dialog-container.component';
 import { SdsDialogRef } from './dialog-ref';
+import { SDS_DIALOG_REF, SDS_DIALOG_REGISTRY } from './dialog-tokens';
 
 /** Injection token that can be used to access the data that was passed in to a dialog. */
 export const SDS_DIALOG_DATA = new InjectionToken<any>('SdsDialogData');
@@ -89,7 +91,7 @@ export class SdsDialogService implements OnDestroy {
    * Will emit on subscribe if there are no open dialogs to begin with.
    */
   readonly afterAllClosed: Observable<any> = defer<any>(() =>
-    this.openDialogs.length ? this._afterAllClosed : this._afterAllClosed.pipe(startWith(undefined))
+    this.openDialogs.length ? this._afterAllClosed : this._afterAllClosed.pipe(startWith(undefined)),
   );
 
   constructor(
@@ -100,7 +102,7 @@ export class SdsDialogService implements OnDestroy {
     @Inject(SDS_DIALOG_SCROLL_STRATEGY) scrollStrategy: any,
     @Inject(SDS_SLIDE_OUT_SCROLL_STRATEGY) slideOutScrollStrategy: any,
     @Optional() @SkipSelf() private _parentDialog: SdsDialogService,
-    private _overlayContainer: OverlayContainer
+    private _overlayContainer: OverlayContainer,
   ) {
     this._scrollStrategy = scrollStrategy;
     this._slideOutScrollStrategy = slideOutScrollStrategy;
@@ -115,7 +117,7 @@ export class SdsDialogService implements OnDestroy {
    */
   open<T, D = any, R = any>(
     componentOrTemplateRef: ComponentType<T> | TemplateRef<T>,
-    config?: SdsDialogConfig<D>
+    config?: SdsDialogConfig<D>,
   ): SdsDialogRef<T, R> {
     // Convenience widths names: small | medium | large
     // added to help with standardization
@@ -230,7 +232,10 @@ export class SdsDialogService implements OnDestroy {
    */
   private _attachDialogContainer(overlay: OverlayRef, config: SdsDialogConfig): SdsDialogContainerComponent {
     const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
-    const injector = new PortalInjector(userInjector || this._injector, new WeakMap([[SdsDialogConfig, config]]));
+    const injector = Injector.create({
+      parent: userInjector || this._injector,
+      providers: [{ provide: SdsDialogConfig, useValue: config }],
+    });
     const containerPortal = new ComponentPortal(SdsDialogContainerComponent, config.viewContainerRef, injector);
     const containerRef = overlay.attach<SdsDialogContainerComponent>(containerPortal);
 
@@ -250,7 +255,7 @@ export class SdsDialogService implements OnDestroy {
     componentOrTemplateRef: ComponentType<T> | TemplateRef<T>,
     dialogContainer: SdsDialogContainerComponent,
     overlayRef: OverlayRef,
-    config: SdsDialogConfig
+    config: SdsDialogConfig,
   ): SdsDialogRef<T, R> {
     // Create a reference to the dialog we're creating in order to give the user a handle
     // to modify and close it.
@@ -267,12 +272,12 @@ export class SdsDialogService implements OnDestroy {
 
     if (componentOrTemplateRef instanceof TemplateRef) {
       dialogContainer.attachTemplatePortal(
-        new TemplatePortal<T>(componentOrTemplateRef, null!, <any>{ $implicit: config.data, dialogRef })
+        new TemplatePortal<T>(componentOrTemplateRef, null!, <any>{ $implicit: config.data, dialogRef }),
       );
     } else {
       const injector = this._createInjector<T>(config, dialogRef, dialogContainer);
       const contentRef = dialogContainer.attachComponentPortal<T>(
-        new ComponentPortal(componentOrTemplateRef, undefined, injector)
+        new ComponentPortal(componentOrTemplateRef, undefined, injector),
       );
       dialogRef.componentInstance = contentRef.instance;
     }
@@ -293,28 +298,36 @@ export class SdsDialogService implements OnDestroy {
   private _createInjector<T>(
     config: SdsDialogConfig,
     dialogRef: SdsDialogRef<T>,
-    dialogContainer: SdsDialogContainerComponent
-  ): PortalInjector {
+    dialogContainer: SdsDialogContainerComponent,
+  ): Injector {
     const userInjector = config && config.viewContainerRef && config.viewContainerRef.injector;
 
     // The SdsDialogContainerComponent is injected in the portal as the SdsDialogContainerComponent and the dialog's
     // content are created out of the same ViewContainerRef and as such, are siblings for injector
     // purposes. To allow the hierarchy that is expected, the SdsDialogContainerComponent is explicitly
     // added to the injection tokens.
-    const injectionTokens = new WeakMap<any, any>([
-      [SdsDialogContainerComponent, dialogContainer],
-      [SDS_DIALOG_DATA, config.data],
-      [SdsDialogRef, dialogRef],
-    ]);
+    const providers: StaticProvider[] = [
+      { provide: SdsDialogContainerComponent, useValue: dialogContainer },
+      { provide: SDS_DIALOG_DATA, useValue: config.data },
+      { provide: SdsDialogRef, useValue: dialogRef },
+      { provide: SDS_DIALOG_REF, useValue: dialogRef },
+      { provide: SDS_DIALOG_REGISTRY, useValue: this },
+    ];
 
     if (config.direction && (!userInjector || !userInjector.get<Directionality | null>(Directionality, null))) {
-      injectionTokens.set(Directionality, {
-        value: config.direction,
-        change: observableOf(),
+      providers.push({
+        provide: Directionality,
+        useValue: {
+          value: config.direction,
+          change: observableOf(),
+        },
       });
     }
 
-    return new PortalInjector(userInjector || this._injector, injectionTokens);
+    return Injector.create({
+      parent: userInjector || this._injector,
+      providers,
+    });
   }
 
   /**

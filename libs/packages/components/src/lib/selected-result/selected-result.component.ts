@@ -15,6 +15,7 @@ const SDS_SelectedResult_VALUE_ACCESSOR: any = {
   templateUrl: './selected-result.component.html',
   styleUrls: ['./selected-result.component.scss'],
   providers: [SDS_SelectedResult_VALUE_ACCESSOR],
+  standalone: false,
 })
 export class SDSSelectedResultComponent implements ControlValueAccessor {
   /**

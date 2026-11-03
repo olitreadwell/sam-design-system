@@ -4,6 +4,7 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
 @Component({
   selector: 'sds-formly-field-radio',
   templateUrl: './radio.html',
+  standalone: false,
 })
 export class FormlyFieldRadioComponent extends FieldType<FieldTypeConfig> implements AfterViewInit {
   @ViewChild('defaultTemplate') defaultTemplate: TemplateRef<any>;

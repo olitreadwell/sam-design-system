@@ -4,15 +4,13 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SdsAccordionModule } from './accordion.module';
 
 describe('SdsAccordionItem', () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [SdsAccordionModule, NoopAnimationsModule],
-        declarations: [AccordionItem],
-      });
-      TestBed.compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      imports: [SdsAccordionModule, NoopAnimationsModule],
+      declarations: [AccordionItem],
+    });
+    TestBed.compileComponents();
+  }));
 
   it('should expand and collapse the accordion item', fakeAsync(() => {
     const fixture = TestBed.createComponent(AccordionItem);
@@ -72,11 +70,12 @@ describe('SdsAccordionItem', () => {
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </sds-accordion-item>
   `,
+  standalone: false,
 })
 class AccordionItem {
   expanded = false;
   hideToggle = false;
   disabled = false;
-  openCallback = jasmine.createSpy('openCallback');
-  closeCallback = jasmine.createSpy('closeCallback');
+  openCallback = vi.fn();
+  closeCallback = vi.fn();
 }

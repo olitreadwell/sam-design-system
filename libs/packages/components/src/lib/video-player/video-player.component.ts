@@ -11,11 +11,11 @@ import {
   ChangeDetectorRef,
   OnDestroy,
   Inject,
+  DOCUMENT,
 } from '@angular/core';
 import { GLOBAL_STRINGS } from 'accessible-html5-video-player/js/strings.js';
 import * as InitPxVideo from 'accessible-html5-video-player/js/px-video.js';
 import { VPInterface } from './video-player';
-import { DOCUMENT } from '@angular/common';
 
 interface InitPxVideoConfig {
   videoId: string;
@@ -36,6 +36,7 @@ declare class InitPxVideo {
   templateUrl: './video-player.component.html',
   styleUrls: ['./css/px-video.css'],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class SdsVideoPlayerComponent implements AfterViewInit, OnChanges, OnInit, OnDestroy {
   @Input() VPConfiguration: VPInterface;
@@ -50,7 +51,7 @@ export class SdsVideoPlayerComponent implements AfterViewInit, OnChanges, OnInit
     private elementRef: ElementRef,
     private renderer2: Renderer2,
     private cdr: ChangeDetectorRef,
-    @Inject(DOCUMENT) private document: any
+    @Inject(DOCUMENT) private document: any,
   ) {}
 
   ngOnDestroy() {
@@ -132,6 +133,7 @@ export class SdsVideoPlayerComponent implements AfterViewInit, OnChanges, OnInit
       // Edge case - if the button to toggle video source does not exist in dom, then add in the
       // video source and let the browser decide when to fetch video data
       this.loadVideoSource = true;
+      this.cdr.detectChanges();
     } else {
       playButton.onclick = loadVideo;
       restartButton.onclick = loadVideo;

@@ -1,4 +1,3 @@
-import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -16,6 +15,7 @@ import {
   SimpleChanges,
   TemplateRef,
   ViewChild,
+  DOCUMENT,
 } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,12 +26,14 @@ import { Observable } from 'rxjs';
 @Component({
   selector: `[sdsStepHeader]`,
   template: `<ng-content></ng-content>`,
+  standalone: false,
 })
 export class SdsStepHeaderComponent {}
 
 @Component({
   selector: `[sdsStepFooter]`,
   template: '<ng-content></ng-content>',
+  standalone: false,
 })
 export class SdsStepFooterComponent {}
 
@@ -42,6 +44,7 @@ let nextId = 0;
   exportAs: `sdsStep`,
   templateUrl: `./sds-step.component.html`,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SdsStepComponent {
   /**
@@ -144,7 +147,7 @@ export class SdsStepComponent {
   constructor(
     @Inject(forwardRef(() => SdsStepper)) public _stepper: SdsStepper,
     private _el: ElementRef,
-    @Inject(DOCUMENT) private _document
+    @Inject(DOCUMENT) private _document,
   ) {}
 
   hasAllEmptyValues(obj) {
@@ -208,6 +211,7 @@ export class SdsStepComponent {
 @Directive({
   selector: `[sdsStepper]`,
   exportAs: 'sdsStepper',
+  standalone: false,
 })
 export class SdsStepper {
   @ContentChildren(SdsStepComponent) stepTemplates: QueryList<SdsStepComponent>;
@@ -323,7 +327,11 @@ export class SdsStepper {
     this.modelChange.emit($event.detail);
   }
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, public cdr: ChangeDetectorRef) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    public cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (!this.selectedStep) {
@@ -507,7 +515,7 @@ export class SdsStepper {
       stepIndex = stepIndex + incrementor;
       if (stepIndex > this.flatSteps.length) {
         throw Error(
-          `StepIndex of ${stepIndex} is greater than the number of steps. Check that you are passing in a sensible incrementor.)`
+          `StepIndex of ${stepIndex} is greater than the number of steps. Check that you are passing in a sensible incrementor.)`,
         );
       }
     }
@@ -577,7 +585,7 @@ export class SdsStepper {
   private toggleOnValidationForStep(
     step: SdsStepComponent,
     validityMap: { [key: string]: boolean | undefined },
-    customErrorHandling?: boolean
+    customErrorHandling?: boolean,
   ) {
     if (!step.options && !customErrorHandling) {
       this.selectedStep.options = {};

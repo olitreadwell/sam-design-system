@@ -5,6 +5,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   templateUrl: './group-panel.component.html',
   selector: `sds-groupwrappers-panel-demo`,
+  standalone: false,
 })
 export class GroupPanel {
   form = new UntypedFormGroup({});

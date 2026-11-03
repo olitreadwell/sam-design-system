@@ -32,6 +32,7 @@ const Autocomplete_VALUE_ACCESSOR: any = {
   styleUrls: ['./autocomplete.component.scss'],
   providers: [Autocomplete_VALUE_ACCESSOR],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SDSAutocompleteComponent implements ControlValueAccessor, OnInit, OnDestroy {
   /**

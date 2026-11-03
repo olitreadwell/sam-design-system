@@ -1,4 +1,4 @@
-import { makeDecorator } from '@storybook/preview-api';
+import { makeDecorator } from 'storybook/preview-api';
 export const stackblitzLink = makeDecorator({
   name: 'stackblitzLink',
   parameterName: 'stackblitzLink',
@@ -11,9 +11,9 @@ export const stackblitzLink = makeDecorator({
         <div style="float: right;">
           <a href="${parameters}" target="_blank">Link To Stackblitz</a>
         </div>
-        <div>${ story.template }</div>
+        <div>${story.template}</div>
     `;
     // return the modified story string
     return story;
-  }
+  },
 });

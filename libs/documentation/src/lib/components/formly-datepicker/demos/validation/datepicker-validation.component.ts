@@ -5,6 +5,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   templateUrl: './datepicker-validation.component.html',
   selector: `sds-formly-datepicker-validation-demo`,
+  standalone: false,
 })
 export class FormlyDatepickerValidation {
   results: any = {};

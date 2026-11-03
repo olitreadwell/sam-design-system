@@ -4,6 +4,7 @@ import tableDataFull from './data';
 @Component({
   templateUrl: './pagination.component.html',
   selector: `sds-table-pagination-demo`,
+  standalone: false,
 })
 export class TablePaginationComponent {
   constructor() {

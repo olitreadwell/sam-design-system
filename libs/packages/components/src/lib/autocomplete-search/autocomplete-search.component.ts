@@ -27,6 +27,7 @@ const Autocomplete_Autocomplete_VALUE_ACCESSOR: any = {
   templateUrl: './autocomplete-search.component.html',
   styleUrls: ['./autocomplete-search.component.scss'],
   providers: [Autocomplete_Autocomplete_VALUE_ACCESSOR],
+  standalone: false,
 })
 export class SDSAutocompleteSearchComponent implements ControlValueAccessor {
   constructor(private _changeDetectorRef: ChangeDetectorRef) {}
@@ -228,7 +229,7 @@ export class SDSAutocompleteSearchComponent implements ControlValueAccessor {
           const customItem = this.createFreeTextItem();
           this.selectItem(customItem);
         }
-      } else if (this.model.items.length > 0) {
+      } else if (this.model?.items?.length > 0) {
         this.inputValue = this.getObjectValue(this.model.items[0], this.configuration.primaryTextField);
       } else {
         this.inputValue = '';
@@ -363,7 +364,7 @@ export class SDSAutocompleteSearchComponent implements ControlValueAccessor {
       this.input.nativeElement.focus();
       const flat = this.getFlatElements();
       const index = flat.findIndex(
-        (element) => element[this.configuration.primaryKeyField] === item[this.configuration.primaryKeyField]
+        (element) => element[this.configuration.primaryKeyField] === item[this.configuration.primaryKeyField],
       );
       this.highlightedIndex = index;
       this.setHighlightedItem(flat[this.highlightedIndex]);
@@ -381,7 +382,7 @@ export class SDSAutocompleteSearchComponent implements ControlValueAccessor {
       item,
       this.configuration.primaryKeyField,
       this.configuration.selectionMode,
-      this.model
+      this.model,
     );
     this.propogateChange(this.model);
     let message = this.getObjectValue(item, this.configuration.primaryTextField);
@@ -511,8 +512,8 @@ export class SDSAutocompleteSearchComponent implements ControlValueAccessor {
    * @param result
    */
   checkItemSelected(result: any) {
-    const selectedItem = this.model.items.filter(
-      (item) => item[this.configuration.primaryKeyField] === result[this.configuration.primaryKeyField]
+    const selectedItem = this.model?.items.filter(
+      (item) => item[this.configuration.primaryKeyField] === result[this.configuration.primaryKeyField],
     );
     return selectedItem.length > 0 ? true : false;
   }
@@ -540,8 +541,8 @@ export class SDSAutocompleteSearchComponent implements ControlValueAccessor {
               this.configuration.isFreeTextEnabled || this.maxResults == 0
                 ? -1
                 : this.highlightedIndex >= 0
-                ? this.highlightedIndex
-                : 0;
+                  ? this.highlightedIndex
+                  : 0;
             if (!this.configuration.isFreeTextEnabled) {
               this.setHighlightedItem(this.results[this.highlightedIndex]);
             }

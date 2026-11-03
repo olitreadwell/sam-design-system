@@ -2,6 +2,7 @@ import { Directive, ElementRef, Output, EventEmitter, HostListener } from '@angu
 
 @Directive({
   selector: '[sds-tab-outside]',
+  standalone: false,
 })
 export class SDSTabOutsideDirective {
   /**

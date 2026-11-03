@@ -6,6 +6,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   selector: 'sds-readonly-formly-type-demo',
   templateUrl: './readonly-formly-type.component.html',
+  standalone: false,
 })
 export class ReadonlyFormlyTypeComponent {
   isReadOnlyMode = false;

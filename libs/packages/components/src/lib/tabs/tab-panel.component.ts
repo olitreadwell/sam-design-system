@@ -3,6 +3,7 @@ import { Component, Input, TemplateRef } from '@angular/core';
 @Component({
   selector: `sds-tab-panel`,
   templateUrl: `./tab-panel.component.html`,
+  standalone: false,
 })
 export class TabPanelComponent {
   /**

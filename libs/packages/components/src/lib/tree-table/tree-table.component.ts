@@ -15,6 +15,7 @@ import { SdsTreeTableData } from './tree-table.model';
 
 @Directive({
   selector: `[sdsTreeTableRow]`,
+  standalone: false,
 })
 export class SdsTreeTableRow {
   constructor(public templateRef: TemplateRef<any>) {}
@@ -24,6 +25,7 @@ export class SdsTreeTableRow {
   selector: `sds-tree-table`,
   templateUrl: `./tree-table.component.html`,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class SdsTreeTableComponent {
   /** Rows of table tada to display */
@@ -76,7 +78,11 @@ export class SdsTreeTableComponent {
   _selectedRow: any;
   _selectedRowParent: any;
 
-  constructor(private elementRef: ElementRef, public cdr: ChangeDetectorRef, private ngZone: NgZone) {}
+  constructor(
+    private elementRef: ElementRef,
+    public cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
+  ) {}
 
   /**
    * Public Interface - close all opened children
@@ -173,13 +179,16 @@ export class SdsTreeTableComponent {
     return false;
   }
 
-  private findRow(allRows: any[], id: string) {
+  private findRow(allRows: any[], id: string): SdsTreeTableData | null {
     for (let i = 0; i < allRows.length; i++) {
       const row = allRows[i];
       if (row.id === id) {
         return row;
       } else if (row.children) {
-        return this.findRow(allRows, id);
+        const childRow = this.findRow(row.children, id);
+        if (childRow) {
+          return childRow;
+        }
       }
     }
     return null;
@@ -250,7 +259,7 @@ export class SdsTreeTableComponent {
     index: number,
     level: number,
     parentSelected?: boolean,
-    parentRow?: HTMLTableRowElement
+    parentRow?: HTMLTableRowElement,
   ) {
     const updatedLevel = level + 1;
     const posinset = index + 1;

@@ -4,5 +4,6 @@ import { Component } from '@angular/core';
   templateUrl: './popup-basic.component.html',
   styleUrls: ['./popup-basic.component.scss'],
   selector: `sds-popup-basic-demo`,
+  standalone: false,
 })
 export class PopupBasic {}

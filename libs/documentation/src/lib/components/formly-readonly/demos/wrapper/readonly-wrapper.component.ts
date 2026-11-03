@@ -4,6 +4,7 @@ import { SdsFormlyTypes } from '@gsa-sam/sam-formly';
 @Component({
   selector: 'sds-readonly-wrapper-demo',
   templateUrl: './readonly-wrapper.component.html',
+  standalone: false,
 })
 export class ReadonlyWrapperComponent {
   sampleData = [

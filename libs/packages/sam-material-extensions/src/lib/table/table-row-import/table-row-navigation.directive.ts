@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 @Directive({
   selector: 'tr[mat-row][sdsTableRowNavigation]',
+  standalone: false,
 })
 export class TableRowNavigationDirective {
   private readonly hoverClass = 'sds-table__row--hovered';
@@ -10,7 +11,11 @@ export class TableRowNavigationDirective {
   @Input()
   highlightOnHover = false;
 
-  constructor(private el: ElementRef, private renderer: Renderer2, private router: Router) {}
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private router: Router,
+  ) {}
 
   @HostListener('mouseenter') onMouseEnter() {
     if (this.highlightOnHover) {

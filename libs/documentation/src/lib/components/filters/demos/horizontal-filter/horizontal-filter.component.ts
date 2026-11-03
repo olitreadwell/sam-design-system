@@ -3,6 +3,7 @@ import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 @Component({
   selector: `horizontal-filter-demo`,
   templateUrl: `horizontal-filter.component.html`,
+  standalone: false,
 })
 export class HorizontalFilterDemo {
   options: FormlyFormOptions = {};

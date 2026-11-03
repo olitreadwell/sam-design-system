@@ -4,14 +4,18 @@ import { By } from '@angular/platform-browser';
 import { Component, DebugElement, ViewChild } from '@angular/core';
 import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule, FormlyForm, FormlyFieldConfig } from '@ngx-formly/core';
-import { SdsTabsModule, SelectionMode } from 'libs/packages/components/src/lib/public-api';
+import { SdsTabsModule, SelectionMode } from '@gsa-sam/components';
 import { SdsFormlyTypes } from '../models/formly-types';
 import { SdsFormlyModule } from '../formly.module';
 import { FormlyTabsWrapperComponent } from './tabs.wrapper';
 
 let testComponentInputs;
 
-@Component({ selector: 'formly-form-input', template: '' })
+@Component({
+  selector: 'formly-form-input',
+  template: '',
+  standalone: false,
+})
 class TestComponent {
   @ViewChild(FormlyForm, { static: false }) formlyForm: FormlyForm;
 
@@ -143,25 +147,21 @@ describe('Tabs Formly Field Component', () => {
     };
 
     fixture = createTestComponent(
-      '<formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>'
+      '<formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>',
     );
   });
 
-  xit(
-    'should properly trigger filter change on model update',
-    waitForAsync(() => {
-      const subscription = fixture.componentInstance.formlyForm.modelChange.subscribe((change) => {
-        expect(change.keyword.keywordRadio === 'allWords');
-        subscription.unsubscribe();
-      });
-      const secondRadioOption: HTMLFormElement = fixture.debugElement.query(By.css('#keywordRadioTest_1'))
-        .nativeElement;
-      secondRadioOption.click();
-      fixture.detectChanges();
-    })
-  );
+  it.skip('should properly trigger filter change on model update', waitForAsync(() => {
+    const subscription = fixture.componentInstance.formlyForm.modelChange.subscribe((change) => {
+      expect(change.keyword.keywordRadio === 'allWords');
+      subscription.unsubscribe();
+    });
+    const secondRadioOption: HTMLFormElement = fixture.debugElement.query(By.css('#keywordRadioTest_1')).nativeElement;
+    secondRadioOption.click();
+    fixture.detectChanges();
+  }));
 
-  xit('Should switch tabs on tab click', () => {
+  it.skip('Should switch tabs on tab click', () => {
     const tabsElements: DebugElement[] = fixture.debugElement.queryAll(By.css('.sds-tabs__item'));
     expect(tabsElements.length).toEqual(2);
     expect(tabsElements[0].attributes['aria-selected']).toEqual('true');

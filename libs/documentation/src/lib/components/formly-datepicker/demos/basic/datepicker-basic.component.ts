@@ -6,6 +6,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
   templateUrl: './datepicker-basic.component.html',
   styleUrls: ['./datepicker-basic.component.scss'],
   selector: `sds-formly-datepicker-basic-demo`,
+  standalone: false,
 })
 export class FormlyDatepickerBasic {
   results: any = {};

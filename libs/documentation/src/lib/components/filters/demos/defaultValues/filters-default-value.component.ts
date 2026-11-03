@@ -6,6 +6,7 @@ import { filterFields } from './fields';
 @Component({
   selector: `sds-filters-default-value-demo`,
   templateUrl: './filters-default-value.component.html',
+  standalone: false,
 })
 export class FiltersDefaultValueComponent {
   form = new UntypedFormGroup({});

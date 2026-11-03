@@ -7,6 +7,7 @@ import { SDSAutocompletelConfiguration, SDSSelectedItemModel, SelectionMode } fr
   templateUrl: './autocomplete-mincharacter.component.html',
   selector: `sds-formly-mincharacter-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class FormlyAutocompleteMinCharacter {
   results: any;

@@ -6,6 +6,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
   templateUrl: './filterwrapper-basic.component.html',
   styleUrls: ['./filterwrapper-basic.component.scss'],
   selector: `sds-filter-wrapper-demo`,
+  standalone: false,
 })
 export class FilterWrapperBasic {
   form = new UntypedFormGroup({});

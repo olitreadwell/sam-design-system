@@ -6,6 +6,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
   templateUrl: './form-field-basic.component.html',
   styleUrls: ['./form-field-basic.component.scss'],
   selector: `sds-form-field-basic-demo`,
+  standalone: false,
 })
 export class FormFieldBasic {
   form = new UntypedFormGroup({});

@@ -4,6 +4,7 @@ import { NavigationLink, SideNavigationModel } from '../../side-navigation/model
 @Component({
   selector: `sds-sub-panel`,
   templateUrl: './sub-panel.component.html',
+  standalone: false,
 })
 export class SdsSubPanelComponent {
   @Input() model: NavigationLink[];

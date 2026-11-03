@@ -1,7 +1,7 @@
 import { ComponentFixture, fakeAsync, flush, inject, TestBed, tick } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
-import { Component, ElementRef, ViewChild, ViewChildren, QueryList, Type, Provider } from '@angular/core';
+import { Component, ElementRef, ViewChild, ViewChildren, QueryList, Type, Provider, Input } from '@angular/core';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { ESCAPE, DOWN_ARROW, HOME, END } from '@angular/cdk/keycodes';
 import { FocusMonitor } from '@angular/cdk/a11y';
@@ -17,6 +17,17 @@ import {
 } from '../testing/dispatch-events';
 import { createKeyboardEvent } from '../testing/event-objects';
 import { patchElementFocus } from '../testing/element-focus';
+import { IconModule } from '@gsa-sam/ngx-uswds-icons';
+import { NgxBootstrapIconsModule } from 'ngx-bootstrap-icons';
+
+@Component({ selector: 'usa-icon', template: '', standalone: false })
+class UsaIconStubComponent {
+  @Input() icon = '';
+  @Input() size = 'lg';
+  @Input() rotate = 0;
+  @Input() classes?: string[];
+  @Input() skew?: unknown;
+}
 
 describe('SdsMenu', () => {
   let overlayContainer: OverlayContainer;
@@ -26,13 +37,20 @@ describe('SdsMenu', () => {
   function createComponent<T>(
     component: Type<T>,
     providers: Provider[] = [],
-    declarations: any[] = []
+    declarations: any[] = [],
   ): ComponentFixture<T> {
     TestBed.configureTestingModule({
       imports: [SdsMenuModule, NoopAnimationsModule],
       declarations: [component, ...declarations],
       providers,
-    }).compileComponents();
+    });
+
+    TestBed.overrideModule(SdsMenuModule, {
+      remove: { imports: [IconModule, NgxBootstrapIconsModule] },
+      add: { declarations: [UsaIconStubComponent], exports: [UsaIconStubComponent] },
+    });
+
+    TestBed.compileComponents();
 
     inject([OverlayContainer, FocusMonitor], (oc: OverlayContainer, fm: FocusMonitor) => {
       overlayContainer = oc;
@@ -175,10 +193,10 @@ describe('SdsMenu', () => {
 
     const menuPanel = overlayContainerElement.querySelector('.sds-overlay');
 
-    expect(menuPanel).toBeTruthy('Expected to find a menu panel.');
+    expect(menuPanel).toBeTruthy();
 
     const role = menuPanel ? menuPanel.getAttribute('role') : '';
-    expect(role).toBe('menu', 'Expected panel to have the "menu" role.');
+    expect(role).toBe('menu');
   });
 
   it('should set the "menuitem" role on the items by default', () => {
@@ -201,7 +219,7 @@ describe('SdsMenu', () => {
   it('should set the proper focus origin when opening by mouse', fakeAsync(() => {
     const fixture = createComponent(SimpleMenuComponent, [], [FakeIconComponent]);
     fixture.detectChanges();
-    spyOn(fixture.componentInstance.items.first, 'focus').and.callThrough();
+    vi.spyOn(fixture.componentInstance.items.first, 'focus');
 
     const triggerEl = fixture.componentInstance.triggerEl.nativeElement;
 
@@ -216,7 +234,7 @@ describe('SdsMenu', () => {
   it('should set the proper focus origin when opening by touch', fakeAsync(() => {
     const fixture = createComponent(SimpleMenuComponent, [], [FakeIconComponent]);
     fixture.detectChanges();
-    spyOn(fixture.componentInstance.items.first, 'focus').and.callThrough();
+    vi.spyOn(fixture.componentInstance.items.first, 'focus');
 
     const triggerEl = fixture.componentInstance.triggerEl.nativeElement;
 
@@ -263,7 +281,7 @@ describe('SdsMenu', () => {
       SimpleMenuComponent,
       [],
       // tslint:disable-next-line: no-use-before-declare
-      [FakeIconComponent]
+      [FakeIconComponent],
     );
     fixture.detectChanges();
     const triggerEl = fixture.componentInstance.triggerEl.nativeElement;
@@ -297,7 +315,7 @@ describe('SdsMenu', () => {
     items[items.length - 1].focus();
     fixture.detectChanges();
 
-    spyOn(items[0], 'focus').and.callThrough();
+    vi.spyOn(items[0], 'focus');
 
     const event = dispatchKeyboardEvent(panel, 'keydown', HOME);
     fixture.detectChanges();
@@ -318,7 +336,7 @@ describe('SdsMenu', () => {
     const items = Array.from(panel.querySelectorAll('.sds-menu__item')) as HTMLElement[];
     items.forEach(patchElementFocus);
 
-    spyOn(items[items.length - 1], 'focus').and.callThrough();
+    vi.spyOn(items[items.length - 1], 'focus');
 
     const event = dispatchKeyboardEvent(panel, 'keydown', END);
     fixture.detectChanges();
@@ -405,10 +423,7 @@ describe('SdsMenu', () => {
 
       let panel = overlayContainerElement.querySelector('.sds-overlay') as HTMLElement;
       fixture.detectChanges();
-      expect(Math.floor(panel.getBoundingClientRect().bottom)).toBe(
-        Math.floor(trigger.getBoundingClientRect().top),
-        'Expected menu to open above'
-      );
+      expect(Math.floor(panel.getBoundingClientRect().bottom)).toBe(Math.floor(trigger.getBoundingClientRect().top));
 
       fixture.componentInstance.trigger.closeMenu();
       fixture.detectChanges();
@@ -420,11 +435,154 @@ describe('SdsMenu', () => {
       fixture.detectChanges();
       panel = overlayContainerElement.querySelector('.sds-overlay') as HTMLElement;
 
-      expect(Math.floor(panel.getBoundingClientRect().top)).toBe(
-        Math.floor(trigger.getBoundingClientRect().bottom),
-        'Expected menu to open below'
-      );
+      expect(Math.floor(panel.getBoundingClientRect().top)).toBe(Math.floor(trigger.getBoundingClientRect().bottom));
     });
+  });
+
+  describe('menu header', () => {
+    it('should render header title and close button, and close on clicking close button', fakeAsync(() => {
+      const fixture = createComponent(MenuWithHeaderComponent);
+      fixture.detectChanges();
+
+      fixture.componentInstance.trigger.openMenu();
+      fixture.detectChanges();
+
+      const headerTitle = overlayContainerElement.querySelector('.sds-menu__header-title');
+      expect(headerTitle?.textContent?.trim()).toBe('Menu Title');
+
+      const closeButton = overlayContainerElement.querySelector(
+        '.sds-menu__header button[aria-label="Close Menu"]',
+      ) as HTMLButtonElement;
+      expect(closeButton).toBeTruthy();
+      expect(closeButton.classList.contains('sds-button--circular')).toBe(true);
+
+      closeButton.click();
+      fixture.detectChanges();
+      tick(500);
+
+      expect(overlayContainerElement.textContent).toBe('');
+    }));
+
+    it('should hide close button when hideClose is true', fakeAsync(() => {
+      const fixture = createComponent(MenuWithHeaderComponent);
+      fixture.componentInstance.hideClose = true;
+      fixture.detectChanges();
+
+      fixture.componentInstance.trigger.openMenu();
+      fixture.detectChanges();
+
+      const closeButton = overlayContainerElement.querySelector('.sds-menu__header button[aria-label="Close Menu"]');
+      expect(closeButton).toBeNull();
+
+      fixture.componentInstance.trigger.closeMenu();
+      fixture.detectChanges();
+      tick(500);
+    }));
+
+    it('should apply small class to header button when menu size is sm', fakeAsync(() => {
+      const fixture = createComponent(MenuWithHeaderComponent);
+      fixture.componentInstance.menuSize = 'sm';
+      fixture.detectChanges();
+
+      fixture.componentInstance.trigger.openMenu();
+      fixture.detectChanges();
+
+      const closeButton = overlayContainerElement.querySelector(
+        '.sds-menu__header button[aria-label="Close Menu"]',
+      ) as HTMLButtonElement;
+      expect(closeButton.classList.contains('sds-button--small')).toBe(true);
+
+      fixture.componentInstance.trigger.closeMenu();
+      fixture.detectChanges();
+      tick(500);
+    }));
+  });
+
+  describe('menu component and trigger methods', () => {
+    it('should get and set overlapTrigger', () => {
+      const fixture = createComponent(SimpleMenuComponent, [], [FakeIconComponent]);
+      fixture.detectChanges();
+      const menu = fixture.componentInstance.menu;
+
+      expect(menu.overlapTrigger).toBe(false);
+      menu.overlapTrigger = true;
+      expect(menu.overlapTrigger).toBe(true);
+    });
+
+    it('should remove previous panel classes when panelClass changes', () => {
+      const fixture = createComponent(SimpleMenuComponent, [], [FakeIconComponent]);
+      fixture.detectChanges();
+      const menu = fixture.componentInstance.menu as any;
+
+      menu.panelClass = 'class-alpha class-beta';
+      expect(menu._classList['class-alpha']).toBe(true);
+      expect(menu._classList['class-beta']).toBe(true);
+
+      menu.panelClass = 'class-gamma';
+      expect(menu._classList['class-alpha']).toBe(false);
+      expect(menu._classList['class-beta']).toBe(false);
+      expect(menu._classList['class-gamma']).toBe(true);
+    });
+
+    it('should add and remove items from menu', () => {
+      const fixture = createComponent(SimpleMenuComponent, [], [FakeIconComponent]);
+      fixture.detectChanges();
+      const menu = fixture.componentInstance.menu as any;
+      const initialCount = menu._items.length;
+      const firstItem = menu._items[0];
+
+      menu.removeItem(firstItem);
+      expect(menu._items.length).toBe(initialCount - 1);
+      expect(menu._items.indexOf(firstItem)).toBe(-1);
+
+      menu.addItem(firstItem);
+      expect(menu._items.length).toBe(initialCount);
+    });
+
+    it('should not duplicate subscription when setting the same menu on trigger', () => {
+      const fixture = createComponent(SimpleMenuComponent, [], [FakeIconComponent]);
+      fixture.detectChanges();
+      const trigger = fixture.componentInstance.trigger;
+      const menu = fixture.componentInstance.menu;
+
+      trigger.menu = menu;
+      expect(trigger.menu).toBe(menu);
+    });
+
+    it('should not reopen when openMenu is called while already open', () => {
+      const fixture = createComponent(SimpleMenuComponent, [], [FakeIconComponent]);
+      fixture.detectChanges();
+      const trigger = fixture.componentInstance.trigger;
+
+      trigger.openMenu();
+      fixture.detectChanges();
+      expect(trigger.menuOpen).toBe(true);
+
+      trigger.openMenu();
+      expect(trigger.menuOpen).toBe(true);
+
+      trigger.closeMenu();
+    });
+
+    it('should emit menuOpened and menuClosed events', fakeAsync(() => {
+      const fixture = createComponent(SimpleMenuComponent, [], [FakeIconComponent]);
+      fixture.detectChanges();
+      const trigger = fixture.componentInstance.trigger;
+
+      const openSpy = vi.fn();
+      const closeSpy = vi.fn();
+      trigger.menuOpened.subscribe(openSpy);
+      trigger.menuClosed.subscribe(closeSpy);
+
+      trigger.openMenu();
+      fixture.detectChanges();
+      expect(openSpy).toHaveBeenCalled();
+
+      trigger.closeMenu();
+      fixture.detectChanges();
+      tick(500);
+      expect(closeSpy).toHaveBeenCalled();
+    }));
   });
 });
 
@@ -441,6 +599,7 @@ describe('SdsMenu', () => {
       <button *ngFor="let item of extraItems" sds-menu-item>{{ item }}</button>
     </sds-menu>
   `,
+  standalone: false,
 })
 class SimpleMenuComponent {
   @ViewChild(SdsMenuTriggerForDirective, { static: false })
@@ -449,13 +608,14 @@ class SimpleMenuComponent {
   @ViewChild(SdsMenuComponent, { static: false }) menu: SdsMenuComponent;
   @ViewChildren(SdsMenuItemComponent) items: QueryList<SdsMenuItemComponent>;
   extraItems: string[] = [];
-  closeCallback = jasmine.createSpy('menu closed callback');
+  closeCallback = vi.fn();
   panelClass: string;
 }
 
 @Component({
   selector: 'sds-fake-icon',
   template: '<ng-content></ng-content>',
+  standalone: false,
 })
 class FakeIconComponent {}
 
@@ -466,6 +626,7 @@ class FakeIconComponent {}
       <button sds-menu-item>Positioned Content</button>
     </sds-menu>
   `,
+  standalone: false,
 })
 class PositionedMenuComponent {
   @ViewChild(SdsMenuTriggerForDirective, { static: false })
@@ -473,4 +634,24 @@ class PositionedMenuComponent {
   @ViewChild('triggerEl', { static: false }) triggerEl: ElementRef<HTMLElement>;
   xPosition: MenuPositionX = 'before';
   yPosition: MenuPositionY = 'above';
+}
+
+@Component({
+  template: `
+    <button [sdsMenuTriggerFor]="menu" #triggerEl>Toggle menu</button>
+    <sds-menu #menu="sdsMenu" [size]="menuSize">
+      <sds-menu-header [hideClose]="hideClose">Menu Title</sds-menu-header>
+      <button sds-menu-item>First Option</button>
+      <button sds-menu-item>Second Option</button>
+    </sds-menu>
+  `,
+  standalone: false,
+})
+class MenuWithHeaderComponent {
+  @ViewChild(SdsMenuTriggerForDirective, { static: false }) trigger: SdsMenuTriggerForDirective;
+  @ViewChild('triggerEl', { static: false }) triggerEl: ElementRef<HTMLElement>;
+  @ViewChild(SdsMenuComponent, { static: false }) menu: SdsMenuComponent;
+  @ViewChildren(SdsMenuItemComponent) items: QueryList<SdsMenuItemComponent>;
+  hideClose = false;
+  menuSize = 'md';
 }

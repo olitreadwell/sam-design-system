@@ -4,6 +4,7 @@ import { Component, Input } from '@angular/core';
   selector: 'sds-top-banner',
   templateUrl: './top-banner.component.html',
   styleUrls: ['./top-banner.component.scss'],
+  standalone: false,
 })
 export class SdsTopBannerComponent {
   showDetail = false;

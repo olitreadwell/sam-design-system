@@ -8,6 +8,7 @@ import { delay, tap } from 'rxjs/operators';
   templateUrl: './full.component.html',
   styleUrls: ['./full.component.scss'],
   selector: `sds-table-full-demo`,
+  standalone: false,
 })
 export class TableFullComponent {
   constructor(private dataService: DataService) {
@@ -28,7 +29,7 @@ export class TableFullComponent {
       .getData()
       .pipe(
         tap((val) => console.log('Before ' + val)),
-        delay(1000)
+        delay(1000),
       )
       .subscribe((response) => {
         this.data = response;

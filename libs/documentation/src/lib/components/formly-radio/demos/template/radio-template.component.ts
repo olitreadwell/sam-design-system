@@ -6,6 +6,7 @@ import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
   selector: 'gsa-sam-radio-template',
   templateUrl: './radio-template.component.html',
   styleUrls: ['./radio-template.component.scss'],
+  standalone: false,
 })
 export class RadioTemplateComponent implements AfterViewInit {
   @ViewChild('radioTemplate') radioTemplate: TemplateRef<any>;

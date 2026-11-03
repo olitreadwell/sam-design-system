@@ -13,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
       *ngFor="let item of items"
     ></docs-api-component>
   `,
+  standalone: false,
 })
 export class DocumentationAPIPage {
   items: any = [];

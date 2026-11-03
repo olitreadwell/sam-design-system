@@ -5,9 +5,9 @@ import { AutocompleteSampleDataService } from '../services/autocomplete-sample.s
 
 @Component({
   templateUrl: './autocomplete-customtemplate.component.html',
-
   selector: `sds-autocomplete-customtemplate-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class AutocompleteCustomTemplate {
   private data = SampleAutocompleteData;

@@ -8,6 +8,7 @@ import { SDSAutocompletelConfiguration, SDSSelectedItemModel, SelectionMode } fr
   templateUrl: './autocomplete-tag.component.html',
   selector: `sds-formly-tag-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class FormlyAutocompleteTag {
   results: any;

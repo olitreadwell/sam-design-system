@@ -6,6 +6,7 @@ import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@a
   templateUrl: './demo.component.html',
   styleUrls: ['./demo.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class DocumentationWidgetDemoComponent {
   @Input() demoTitle: string;

@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 @Component({
   templateUrl: './filters-group-panel.component.html',
   selector: `sds-filters-group-panel-demo`,
+  standalone: false,
 })
 export class FiltersGroupPanel implements OnInit {
   constructor() {}

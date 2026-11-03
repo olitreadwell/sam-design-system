@@ -8,6 +8,7 @@
     aria-label="Search Options"
     class="usa-select grid-col-12 tablet:grid-col-auto"
     [attr.id]="searchSettings.dropdown.id"
+    [disabled]="disabled"
     (change)="writeValueToModel()"
   >
     <ng-container *ngFor="let item of searchSettings.dropdown.options">
@@ -26,8 +27,9 @@
         [value]="item.value"
         [selected]="model.searchCategory == item.value"
         [disabled]="item.disabled"
-        >{{ item.label }}</option
       >
+        {{ item.label }}
+      </option>
     </ng-container>
   </select>
   <ng-container [ngTemplateOutlet]="inputTemplate"></ng-container>
@@ -35,9 +37,9 @@
 
 <ng-template #inputTemplate>
   <div
-    class="position-relative grid-col-12 suffix-icon"
+    class="position-relative grid-col-12 suffix-icon search-input"
     [ngClass]="{
-      'tablet:grid-col': hasDropdown()
+      'tablet:grid-col': hasDropdown(),
     }"
   >
     <label class="usa-sr-only" [attr.for]="searchSettings.id">Search</label>
@@ -51,6 +53,7 @@
       name="search"
       [placeholder]="searchSettings.placeholder ? searchSettings.placeholder : 'type here'"
       [attr.aria-label]="searchSettings.ariaLabel"
+      [disabled]="disabled"
       (blur)="focusChange()"
       (input)="writeValueToModel()"
     />
@@ -88,6 +91,7 @@
       class="usa-button"
       type="submit"
       [attr.aria-label]="searchSettings.ariaLabel ? searchSettings.ariaLabel : 'Search'"
+      [disabled]="disabled"
       (click)="handleClick($event)"
     >
       <usa-icon class="text-white" [icon]="'search'"></usa-icon>

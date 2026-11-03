@@ -6,6 +6,7 @@ import { kebabCase } from 'lodash-es';
   templateUrl: './icons-uswds.component.html',
   selector: `usa-icon-icons-demo`,
   preserveWhitespaces: true,
+  standalone: false,
 })
 export class IconsUswds {
   bootstrapIcons = Object.keys(uswdsAllIcons).map((iconName) => kebabCase(iconName));

@@ -38,14 +38,12 @@ describe('SdsSideNavigationComponent', () => {
     ],
   };
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [SdsSideNavigationComponent],
-        imports: [RouterTestingModule, SdsAccordionModule, BrowserAnimationsModule],
-      }).compileComponents();
-    })
-  );
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [SdsSideNavigationComponent],
+      imports: [RouterTestingModule, SdsAccordionModule, BrowserAnimationsModule],
+    }).compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SdsSideNavigationComponent);
@@ -179,7 +177,7 @@ describe('SdsSideNavigationComponent', () => {
 
   it('event click', () => {
     let navItem = { mode: NavigationMode.EVENT, text: 'test', route: '/' };
-    spyOn(component.linkEvent, 'emit');
+    vi.spyOn(component.linkEvent, 'emit');
     component.linkClickEvent(navItem);
     expect(component.linkEvent.emit).toHaveBeenCalledWith(navItem);
   });
@@ -213,5 +211,23 @@ describe('SdsSideNavigationComponent', () => {
     link.route = 'test';
     link.queryParams = { 'item space': '1 space' };
     expect(component.urlBuilder(link)).toBe(link.route + '?item%20space=1%20space');
+  });
+
+  it('handles deselect when model or navigationLinks is null/undefined', () => {
+    component.model = null;
+    expect(() => component.deselect()).not.toThrow();
+
+    component.model = { navigationLinks: null };
+    expect(() => component.deselect()).not.toThrow();
+
+    component.model = { navigationLinks: [] };
+    expect(() => component.deselect()).not.toThrow();
+  });
+
+  it('handles select with non-existent id gracefully', () => {
+    component.model = model;
+    component.select('non-existent-id');
+    expect(component.model.navigationLinks[0].selected).toBeFalsy();
+    expect(component.model.navigationLinks[0].children[0].selected).toBeFalsy();
   });
 });

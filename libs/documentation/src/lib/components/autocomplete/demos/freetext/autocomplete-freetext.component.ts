@@ -6,6 +6,7 @@ import { AutocompleteSampleDataService } from '../services/autocomplete-sample.s
   templateUrl: './autocomplete-freetext.component.html',
   selector: `sds-autocomplete-freetext-demo`,
   providers: [AutocompleteSampleDataService],
+  standalone: false,
 })
 export class AutocompleteFreeText implements OnInit {
   public settings = new SDSAutocompletelConfiguration();

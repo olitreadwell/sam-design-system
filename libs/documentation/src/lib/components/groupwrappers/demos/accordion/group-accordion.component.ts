@@ -5,6 +5,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   templateUrl: './group-accordion.component.html',
   selector: `sds-groupwrappers-accordion-demo`,
+  standalone: false,
 })
 export class GroupAccordion {
   form = new UntypedFormGroup({});

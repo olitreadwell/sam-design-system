@@ -5,6 +5,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   selector: `sds-search-basic-demo`,
   templateUrl: './search-basic.component.html',
+  standalone: false,
 })
 export class SearchBasic {
   form = new UntypedFormGroup({});

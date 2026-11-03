@@ -6,6 +6,7 @@ import { Directive, TemplateRef } from '@angular/core';
  */
 @Directive({
   selector: 'ng-template[sdsAccordionItemContent]',
+  standalone: false,
 })
 export class SdsAccordionItemContentDirective {
   constructor(public _template: TemplateRef<any>) {}

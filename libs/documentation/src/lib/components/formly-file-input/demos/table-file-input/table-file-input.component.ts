@@ -6,6 +6,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   selector: 'gsa-sam-table-file-input',
   templateUrl: './table-file-input.component.html',
+  standalone: false,
 })
 export class TableFileInputComponent {
   fields: FormlyFieldConfig[] = [

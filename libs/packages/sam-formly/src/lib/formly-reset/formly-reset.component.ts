@@ -5,6 +5,7 @@ import { FormlyFormOptions } from '@ngx-formly/core';
   selector: 'sds-formly-reset',
   templateUrl: './formly-reset.component.html',
   styleUrls: ['./formly-reset.component.scss'],
+  standalone: false,
 })
 export class SdsFormlyResetComponent {
   /**

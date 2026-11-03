@@ -5,6 +5,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   templateUrl: './checkbox-template.component.html',
   selector: `sds-formly-checkbox-template-demo`,
+  standalone: false,
 })
 export class CheckboxTemplate implements AfterViewInit {
   constructor() {}

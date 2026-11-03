@@ -4,5 +4,6 @@ import { Component } from '@angular/core';
   templateUrl: './icons-coloring.component.html',
   styleUrls: ['./icons-coloring.component.scss'],
   selector: `usa-icon-coloring-demo`,
+  standalone: false,
 })
 export class IconsColoring {}

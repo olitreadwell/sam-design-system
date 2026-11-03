@@ -5,6 +5,7 @@ import { ReadonlyOptions } from './readonly-options.model';
 
 @Directive({
   selector: '[sdsReadonlyLabel]',
+  standalone: false,
 })
 export class ReadonlyLabelDirective {
   constructor(public templateRef: TemplateRef<any>) {}
@@ -12,6 +13,7 @@ export class ReadonlyLabelDirective {
 
 @Directive({
   selector: '[sdsReadonlyValue]',
+  standalone: false,
 })
 export class ReadonlyValueDirective {
   constructor(public templateRef: TemplateRef<any>) {}
@@ -23,6 +25,7 @@ export class ReadonlyValueDirective {
 @Component({
   selector: `sds-readonly-container`,
   templateUrl: './readonly-container.component.html',
+  standalone: false,
 })
 export class ReadonlyContainerComponent implements OnInit {
   @ContentChild(ReadonlyLabelDirective) labelTemplate: ReadonlyLabelDirective;
@@ -78,10 +81,15 @@ export class ReadonlyContainerComponent implements OnInit {
 
     // We do array access from field config for daterangepicker, which can be undefined for other types,
     // hence this is sectioned off in a conditional
-    if (this.formlyFieldConfig.type === this.sdsFormlyTypes.DATERANGEPICKER) {
+    if (
+      this.formlyFieldConfig.type === this.sdsFormlyTypes.DATERANGEPICKER ||
+      this.formlyFieldConfig.type === this.sdsFormlyTypes.DATERANGEPICKERV2
+    ) {
       this.additionalConfig.daterangepickerOptions = {
-        fromDateKey: this.formlyFieldConfig.fieldGroup[0].key as any,
-        toDateKey: this.formlyFieldConfig.fieldGroup[1].key as any,
+        fromDateKey: this.formlyFieldConfig.fieldGroup
+          ? (this.formlyFieldConfig.fieldGroup[0]?.key as any)
+          : 'fromDate',
+        toDateKey: this.formlyFieldConfig.fieldGroup ? (this.formlyFieldConfig.fieldGroup[1]?.key as any) : 'toDate',
       };
     }
   }

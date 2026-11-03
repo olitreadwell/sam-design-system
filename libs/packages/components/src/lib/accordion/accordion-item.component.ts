@@ -20,8 +20,9 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
   ViewChild,
+  DOCUMENT,
 } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+
 import { ANIMATION_MODULE_TYPE } from '@angular/platform-browser/animations';
 import { Subject } from 'rxjs';
 import { filter, startWith, take, distinctUntilChanged } from 'rxjs/operators';
@@ -49,6 +50,7 @@ let uniqueId = 0;
     '[class.sds-accordion__item--expanded]': 'expanded',
     '[class._sds-animation-noopable]': '_animationMode === "NoopAnimations"',
   },
+  standalone: false,
 })
 export class SdsAccordionItemComponent extends CdkAccordionItem implements AfterContentInit, OnChanges, OnDestroy {
   private _document: Document;
@@ -87,7 +89,7 @@ export class SdsAccordionItemComponent extends CdkAccordionItem implements After
     _uniqueSelectionDispatcher: UniqueSelectionDispatcher,
     private _viewContainerRef: ViewContainerRef,
     @Inject(DOCUMENT) _document: any,
-    @Optional() @Inject(ANIMATION_MODULE_TYPE) public _animationMode: string
+    @Optional() @Inject(ANIMATION_MODULE_TYPE) public _animationMode: string,
   ) {
     super(accordion, _changeDetectorRef, _uniqueSelectionDispatcher);
     this.accordion = accordion;
@@ -99,7 +101,7 @@ export class SdsAccordionItemComponent extends CdkAccordionItem implements After
       .pipe(
         distinctUntilChanged((x, y) => {
           return x.fromState === y.fromState && x.toState === y.toState;
-        })
+        }),
       )
       .subscribe((event) => {
         if (event.fromState !== 'void') {
@@ -127,7 +129,7 @@ export class SdsAccordionItemComponent extends CdkAccordionItem implements After
         .pipe(
           startWith(null!),
           filter(() => this.expanded && !this._portal),
-          take(1)
+          take(1),
         )
         .subscribe(() => {
           this._portal = new TemplatePortal(this._lazyContent._template, this._viewContainerRef);

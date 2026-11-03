@@ -6,6 +6,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
   selector: 'gsa-sam-advanced-search',
   templateUrl: './advanced-search.component.html',
   styleUrls: ['./advanced-search.component.scss'],
+  standalone: false,
 })
 export class AdvancedSearch {
   form = new UntypedFormGroup({});

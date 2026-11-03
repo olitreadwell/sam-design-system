@@ -19,6 +19,7 @@ import { SdsFormlyTypes } from '../models/formly-types';
       <ng-container #fieldComponent></ng-container>
     </ng-template>
   `,
+  standalone: false,
 })
 export class FormlyReadonlyWrapperComponent extends FieldWrapper {
   @ViewChild('fieldComponent', { read: ViewContainerRef })

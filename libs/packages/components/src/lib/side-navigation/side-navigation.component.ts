@@ -7,6 +7,7 @@ import { NavigationHelper } from '../common-navigation/navigation-helper';
   selector: 'sds-side-navigation',
   templateUrl: './side-navigation.component.html',
   styleUrls: ['./side-navigation.component.scss'],
+  standalone: false,
 })
 export class SdsSideNavigationComponent {
   /**

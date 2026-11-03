@@ -20,6 +20,7 @@ import { FieldType, FieldTypeConfig, FormlyFieldConfig, FormlyFormBuilder } from
       <formly-field class="margin-top-0" [field]="additionalField"></formly-field>
     </ng-container>
   `,
+  standalone: false,
 })
 export class FormlyFieldButtonComponent extends FieldType<FieldTypeConfig> {
   additionalField: FormlyFieldConfig | null = null;

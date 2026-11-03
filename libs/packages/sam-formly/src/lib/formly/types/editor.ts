@@ -7,6 +7,7 @@ import { SdsEditorComponent } from '@gsa-sam/components';
   selector: 'sds-formly-field-editor',
   template: ` <sds-editor [formControl]="formControl"></sds-editor> `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class FormlyFieldEditorComponent extends AbstractSdsFormly {
   @ViewChild(SdsEditorComponent, { static: true }) public template: SdsEditorComponent;

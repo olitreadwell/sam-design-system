@@ -11,6 +11,7 @@ import { navigationConfig } from './navigation.config';
 @Component({
   selector: 'filter-side-navigation',
   templateUrl: './filter-side-navigation.component.html',
+  standalone: false,
 })
 export class FilterSideNavigationComponent implements OnInit, AfterViewInit {
   @ViewChild('filters') filterComponent: SdsFiltersComponent;
@@ -42,7 +43,7 @@ export class FilterSideNavigationComponent implements OnInit, AfterViewInit {
     public service: DataService,
     public filterService: FilterService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {

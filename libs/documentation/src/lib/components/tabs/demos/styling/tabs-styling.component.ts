@@ -4,5 +4,6 @@ import { Component, ViewEncapsulation } from '@angular/core';
   selector: `sds-tabs-styling-demo`,
   templateUrl: './tabs-styling.component.html',
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class TabsStylingComponent {}

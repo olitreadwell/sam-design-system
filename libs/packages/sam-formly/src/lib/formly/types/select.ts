@@ -41,6 +41,7 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
       </select>
     </ng-template>
   `,
+  standalone: false,
 })
 export class FormlyFieldSelectComponent extends FieldType<FieldTypeConfig> {
   defaultOptions = {

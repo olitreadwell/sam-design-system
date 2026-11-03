@@ -17,7 +17,8 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
         [matDatepicker]="picker"
         [placeholder]="props.placeholder ? props.placeholder : ''"
         [attr.aria-describedby]="props.description ? id + '-description' : undefined"
-        (ngModelChange)="props.change ? props.change(field) : ''"
+        (dateChange)="props.change ? props.change(field) : ''"
+        (dateInput)="props.change ? props.change(field) : ''"
       />
       <mat-datepicker-toggle class="padding-left-1 padding-top-2" matSuffix [for]="picker">
         <usa-icon [icon]="'calendar'" matDatepickerToggleIcon [size]="'sm'"></usa-icon>
@@ -27,5 +28,6 @@ import { FieldType, FieldTypeConfig } from '@ngx-formly/core';
   `,
   styles: ['table.mat-calendar-table td, table.mat-calendar-table th {border-style: none; background-color: unset; }'],
   encapsulation: ViewEncapsulation.None,
+  standalone: false,
 })
 export class FormlyFieldDatePickerComponent extends FieldType<FieldTypeConfig> {}

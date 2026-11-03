@@ -13,6 +13,7 @@ import { Component, Input, OnChanges, OnInit, TemplateRef } from '@angular/core'
       <span class="text-bold">{{ displayValue }}</span>
     </ng-template>
   `,
+  standalone: false,
 })
 export class ReadonlyFileinfoComponent implements OnInit, OnChanges {
   @Input() value: any;
@@ -35,7 +36,8 @@ export class ReadonlyFileinfoComponent implements OnInit, OnChanges {
     const selectedOption = this.fileInfoOptions.find((option) => option.value === this.value);
     if (!selectedOption) {
       this.displayValue = '&mdash;';
+    } else {
+      this.displayValue = selectedOption.label + ' - ' + selectedOption.value;
     }
-    this.displayValue = selectedOption.label + ' - ' + selectedOption.value;
   }
 }

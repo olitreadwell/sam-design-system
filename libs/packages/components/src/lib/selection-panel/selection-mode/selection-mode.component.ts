@@ -5,6 +5,7 @@ import { NavigationLink, SideNavigationModel } from '../..//side-navigation/mode
   selector: 'sds-selection-panel-selection-mode',
   templateUrl: './selection-mode.component.html',
   styleUrls: ['./selection-mode.component.scss'],
+  standalone: false,
 })
 export class SdsSelectionPanelSelectionModeComponent {
   @Input()

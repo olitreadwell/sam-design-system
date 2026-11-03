@@ -5,6 +5,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 @Component({
   selector: 'gsa-sam-uswds-stepper',
   templateUrl: './uneven-steps-stepper.component.html',
+  standalone: false,
 })
 export class UnevenStepsStepperComponent {
   stepOne: FormlyFieldConfig = {
